@@ -1,5 +1,3 @@
-## fitur should be add
-## cms scanner, and maybe auto bruteforce cms with weakpass list
 ## 1.1: importing dependencies
 from turtle import color
 
