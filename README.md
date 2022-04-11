@@ -15,7 +15,7 @@
                    Thanks to: Jeager
 
            [?] Usage example: sicon -u target.com
-              Copyright © 2021 UnknownSec666
+              Copyright © 2022 UnknownSec666
 ```
 
 ## About:
