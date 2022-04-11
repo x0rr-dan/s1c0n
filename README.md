@@ -28,7 +28,7 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 4. Auto scan dir on web server
 
 ## Tested on:
-Kali linux
+Othros linux
 
 ## How to use:
 ```
