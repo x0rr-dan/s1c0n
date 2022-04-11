@@ -1,4 +1,4 @@
-# s1c0n
+## s1c0n
 ![Python](https://img.shields.io/badge/Python-3.9.2-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
@@ -21,11 +21,14 @@
 ## About
 simple recon tool to help you for searching vulnerability on web server. maybe xD
 
-##
+## Features
 1. Auto scan WAF
 2. Auto scan port
 3. Auto scan subdomain
 4. Auto scan dir on web server
+
+## Tested on:
+Kali linux
 
 ## How to use
 ```
