@@ -19,7 +19,13 @@
 ```
 
 ## About
-simple recon tool to help you for searching vulnerability on web server
+simple recon tool to help you for searching vulnerability on web server. maybe xD
+
+##
+1. Auto scan WAF
+2. Auto scan port
+3. Auto scan subdomain
+4. Auto scan dir on web server
 
 ## How to use
 ```
