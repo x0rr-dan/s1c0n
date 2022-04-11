@@ -18,10 +18,10 @@
               Copyright © 2021 UnknownSec666
 ```
 
-## About
+## About:
 simple recon tool to help you for searching vulnerability on web server. maybe xD
 
-## Features
+## Features:
 1. Auto scan WAF
 2. Auto scan port
 3. Auto scan subdomain
@@ -30,7 +30,7 @@ simple recon tool to help you for searching vulnerability on web server. maybe x
 ## Tested on:
 Kali linux
 
-## How to use
+## How to use:
 ```
 python3 sicon.py -u <target>
 ```
