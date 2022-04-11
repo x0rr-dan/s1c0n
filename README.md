@@ -19,7 +19,7 @@
 ```
 
 ## About:
-simple recon tool to help you for searching vulnerability on web server. maybe xD
+simple recon tool to help you searching vulnerability on web server. maybe xD
 
 ## Features:
 1. Auto scan WAF
