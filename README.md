@@ -30,6 +30,11 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 ## Tested on:
 Othros linux
 
+## How to install:
+```
+pip3 install -r requirements.txt
+```
+
 ## How to use:
 ```
 python3 sicon.py -u <target>
