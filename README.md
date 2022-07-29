@@ -28,9 +28,22 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 4. Auto scan dir on web server
 
 ## Tested on:
-Othros linux
-Kali linux
-Debian linux
+- Othros linux
+- Kali linux
+- Debian linux
+
+## tools that must be installed:
+if you are using kali, parrot, blackarch, You don't need to install it manually, this tool will install itself
+```
+nmap
+wafw00f
+sublist3r
+subfinder
+assetfinder
+amass
+dirsearch
+httprobe
+```
 
 ## How to install:
 ```
