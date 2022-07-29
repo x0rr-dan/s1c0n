@@ -29,6 +29,8 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 
 ## Tested on:
 Othros linux
+Kali linux
+Debian linux
 
 ## How to install:
 ```
