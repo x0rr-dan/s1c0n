@@ -33,7 +33,7 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 - Debian linux
 
 ## tools that must be installed:
-if you are using kali, parrot, blackarch, You don't need to install it manually, this tool will install itself
+if you are using kali, parrot, You don't need to install it manually, this tool will install itself
 ```
 nmap
 wafw00f
