@@ -6,16 +6,17 @@
 
 ```
 
-                  ┏━┓╺┓ ┏━╸┏━┓┏┓╻
-                  ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-                  ┗━┛╺┻╸┗━╸┗━┛╹ ╹
+
+	          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
+	          ┗━┓ ┃ ┃  ┃┃┃┃┗┫
+	          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.5 (not finish yet)
                 
                     Simple Recon
-                Coded by UnknownSec666
-                   Thanks to: Jeager
+          Coded by root@x-krypt0n-x A.K.A x0r
+	          System of Pekalongan
 
-           [?] Usage example: sicon -u target.com
-              Copyright © 2022 UnknownSec666
+	   [?] Usage example: sicon -u target.com
+
 ```
 
 ## About:
