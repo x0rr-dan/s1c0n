@@ -26,6 +26,7 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 2. Auto scan port
 3. Auto scan subdomain
 4. Auto scan dir on web server
+5. Auto detect cms (only wordpress and joomla)
 
 ## Tested on:
 - Othros linux
