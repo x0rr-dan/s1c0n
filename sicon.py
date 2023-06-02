@@ -1,80 +1,85 @@
 ## 1.1: importing dependencies
-from turtle import color
+from os import path, system, getcwd
+import os.path, subprocess, nmap, json, sys, time, re, importlib
 
+# Check if a module is installed, and if not, install it
+def check_module(module_name, package_name):
+    try:
+        importlib.import_module(module_name)
+    except ImportError:
+        print(f"\n\t   [!] Error on import {module_name}")
+        user = os.getuid()
+        if user == 0:
+            pass
+        else:
+            print(f"{co.r}{co.bo}[!] {module_name} module is missing, run me with sudo i will install it{co.re}")
+        os.system(f"pip3 install {package_name}")
 
-try:
-	from os import path, system, getcwd
-	import os.path
-	import subprocess
-	import nmap
-	import json
-	import sys
-	import time
-except ImportError as error:
-	print("\n\t   [!] Error on import", error)
+# Check and install required modules
+check_module("nmap", "python-nmap")
+check_module("requests", "requests")
+check_module("json", "json")
 
 ## 1.2: defining classes & functions:
-class Colors:
-	RESET     = "\33[0m"
-	BOLD      = "\33[1m"
-	RED       = "\33[31m"
-	GREEN     = "\33[32m"
-	YELLOW    = "\33[33m"
+class co:
+    re = "\33[0m"
+    bo = "\33[1m"
+    r = "\33[31m"
+    g = "\33[32m"
+    ye = "\33[33m"
 
-## 1.4 checking dependecies tools
 
+## 1.4 checking dependencies tools
 def check(tool):
-  if os.path.exists("/usr/bin/" + tool) == True:
-	  print(Colors.GREEN + Colors.BOLD + "[*] " + tool +  " exist" + Colors.RESET)
-	  time.sleep(0.2)
-	  pass
+    if os.path.exists(f"/usr/bin/{tool}"):
+        print(f"{co.g}{co.bo}[*] {tool} exist{co.re}")
+        time.sleep(0.2)
+    else:
+        # checking user privileges
+        user = os.getuid()
 
-  elif os.path.exists("/usr/bin" + tool) == False:
-	  # checking user privileges
-	  user = os.getuid()
-	  
-	  if user == 0:
-		  pass
+        if user == 0:
+            pass
+        else:
+            print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
+            exit()
+        # installing missing requirements
+        print(f"{co.r}{co.bo}[!] {tool} missing{co.re}")
+        print(f"{co.r}{co.bo}[!] installing {tool}{co.re}")
+        time.sleep(0.2)
+        system(f"apt install {tool} -y")
 
-	  else:
-		  print(Colors.RED + Colors.BOLD + "[!] " + tool + " is missing, Please run me with sudo to install " + tool + Colors.RESET)
-		  exit()
-	  # installing missing requirements
-	  print(Colors.RED + Colors.BOLD + "[!] " + tool + " missing" + Colors.RESET)
-	  print(Colors.RED + Colors.BOLD + "[!] installing " + tool + Colors.RESET)
-	  time.sleep(0.2)
-	  system("apt install "+ tool + " -y")
 
 # requirements
 list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','amass','dirsearch','httprobe']
 for tool in list_tool:
-  check(tool)
-  pass
+    check(tool)
+
 
 def break_and_help():
-	print("\n\t   [?] Usage example: sicon -u target.com")
-	exit()
+    print("\n\t   [?] Usage example: sicon -u target.com")
+    exit()
+
 
 def remove_list_files(extension):
-	system("rm -rf .list*.%s" % extension)
-
+    system(f"rm -rf .list*.{extension}")
 
 
 ## 1.4: preparing everything
 saving_path = getcwd() + "/"
 port_scan = nmap.PortScanner()
 
+
 ## 1.5: "welcome" screen
 system("clear")
-print(Colors.GREEN + Colors.BOLD + """
+print(co.g + co.bo + """
 \t          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
 \t          ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-\t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹
+\t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.5 (not finish yet)
                 
                     Simple Recon
-                Coded by """ + Colors.RESET + Colors.RED + Colors.BOLD + """UnknownSec666""" + Colors.RESET + Colors.GREEN + Colors.BOLD + """
-		   Thanks to:""" + Colors.RED + Colors.BOLD + """ Jeager""" +
-Colors.RESET)
+          Coded by """ + co.re+ co.r + co.bo + """root@x-krypt0n-x A.K.A x0r""" + co.r + co.bo + """\n\t          System of Pekalongan""" +
+co.re)
 
 ## 1.6: getting started
 command_arguments = sys.argv[1:]
@@ -92,9 +97,9 @@ else:
 	break_and_help()
 
 
-
+os.mkdir("report_"+URL_TARGET)
 ## 2.0: Starting recon phase:
-print(Colors.BOLD + Colors.GREEN + "\n\t[*] Starting recon on %s:" % URL_TARGET + Colors.RESET)
+print(co.bo + co.g + "\n\t[*] Starting recon on %s:" % URL_TARGET + co.re)
 
 ## 2.1: Detect WAF using wafw00f:
 # convert to domain using httprobe
@@ -108,13 +113,13 @@ if ("is behind" in detect_waf):
 	post_parser = processed_string.find("\x1b[0m")
 	which_waf   = processed_string[pre_parser:post_parser] # don't include color codes
 
-	print(Colors.BOLD + Colors.GREEN + "\n\t  [+] WAF: DETECTED [ %s ]" % which_waf + Colors.RESET)
+	print(co.bo + co.g + "\n\t  [+] WAF: DETECTED [ %s ]" % which_waf + co.re)
 
 elif ("No WAF detected" in detect_waf):
-	print(Colors.BOLD + Colors.YELLOW + "\n\t  [+] WAF: NOT DETECTED" + Colors.RESET)
+	print(co.bo + co.ye + "\n\t  [+] WAF: NOT DETECTED" + co.re)
 
 else:
-	print(Colors.BOLD + Colors.RED  + "\n\t  [!] FAIL TO DETECT WAF" + Colors.RESET)
+	print(co.bo + co.r  + "\n\t  [!] FAIL TO DETECT WAF" + co.re)
 
 ### 2.2: Scanning ports using nmap
 # run NMAP and filter results using GREP 
@@ -128,10 +133,10 @@ with open(".list_PORTS.txt", encoding="utf-8") as file:
 # remove files we just created
 remove_list_files("txt")
 
-print(Colors.BOLD + Colors.GREEN + "\n\t  [+] OPENED PORTS: %s" % len(ports_list) + Colors.RESET)
+print(co.bo + co.g + "\n\t  [+] OPENED PORTS: %s" % len(ports_list) + co.re)
 
 for p in ports_list:
-	print(Colors.RESET + "\t    " + Colors.GREEN + "-> " + Colors.RESET + Colors.BOLD + p)
+	print(co.re+ "\t    " + co.g + "-> " + co.re+ co.bo + p)
 
 ### 2.3: Getting subdomains
 # this process might take a while, we'll use different scripts for that
@@ -150,9 +155,24 @@ with open(".list_subdomains.txt", encoding="utf-8") as file:
 # drop duplicates
 subdomain_list = set(subdomain_raw_list)
 
+cpanel_subdomain = [subdomain_list for subdomain_list in subdomain_list if subdomain_list.startswith(("cpanel.", "webdisk.", "webmail.", "cpcontacts.", "whm.", "autoconfig.", "mail.", "cpcalendars.", "autodiscover."))]
+
+not_cpanel_subdomain = [subdomain_list for subdomain_list in subdomain_list if not subdomain_list.startswith(("cpanel.", "webdisk.", "webmail.", "cpcontacts.", "whm.", "autoconfig.", "mail.", "cpcalendars.", "autodiscover."))]
+
+# Save cpanel subdomains to file
+with open(os.path.join("report_"+URL_TARGET, "cpanel_subdomain.txt"), "w") as f:
+    f.write("\n".join(cpanel_subdomain))
+
+# Save other subdomains to file, creating the file if it does not exist
+with open(os.path.join("report_"+URL_TARGET, "subdomain.txt"), "w") as f:
+    if not_cpanel_subdomain:
+        f.write("\n".join(not_cpanel_subdomain))
+    else:
+        f.write("")
+
 remove_list_files("txt")
 
-print(Colors.BOLD + Colors.GREEN + "\n\t  [+] SUBDOMAINS DETECTED: %s" % len(subdomain_list) + Colors.RESET)
+print(co.bo + co.g + "\n\t  [+] SUBDOMAINS DETECTED: %s" % len(subdomain_list) + co.re)
 
 for s in subdomain_list:
 
@@ -163,14 +183,40 @@ for s in subdomain_list:
 	if (len(host) > 0):
 		# tcp ports were found
 		tcp_open = str(list(quick_scan["scan"][host[0]]["tcp"].keys()))
-		print(Colors.RESET + Colors.GREEN + "\t    -> " + Colors.RESET + Colors.BOLD + s +
-										" | " +  Colors.GREEN + tcp_open + Colors.RESET)
+		print(co.re+ co.g + "\t    -> " + co.re+ co.bo + s +
+										" | " +  co.g + tcp_open + co.re)
 	else:
 		# port scan failed
-		print(Colors.RESET + Colors.GREEN + "\t    -> " + Colors.RESET + Colors.BOLD + s +
-										" | " +  Colors.RED + "FAIL MAYBE HOST DIED" + Colors.RESET)
+		print(co.re+ co.g + "\t    -> " + co.re+ co.bo + s +
+										" | " +  co.r + "HOST OFFLINE" + co.re)
 
-### 2.4: Bruteforcing json_directory:
+### checking cms 2.4:
+wp_regex = re.compile(r'wp-')
+joomla_regex = re.compile(r'joomla')
+
+print(co.bo + co.g + "\n\t  [+] CMS DETECTEION: " + co.re)
+
+for url in not_cpanel_subdomain:
+    try:
+        response = requests.get('http://'+url, timeout=5)
+        if response.status_code == 200:
+            text = response.text
+            if wp_regex.search(text):
+                print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | Wordpress" + co.re)
+                with open(os.path.join("report_"+URL_TARGET, "wp.txt"), "a") as f:
+                    f.write("http://"+ url + "\n")
+            elif joomla_regex.search(text):
+                print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | Joomla" + co.re)
+                with open(os.path.join("report_"+URL_TARGET, "joomla.txt"), "a") as f:
+                    f.write("http://"+ url + "\n")
+            else:
+                print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | " +  co.r + "FAIL DETECT CMS" + co.re)
+        else:
+            print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | " +  co.r + "HOST OFFLINE WITH CODE "+ str(response.status_code) + co.re)
+    except requests.exceptions.RequestException as e:
+        print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | " +  co.r + "COULD NOT BE REACHED " + co.re)
+
+### 2.5: Bruteforcing json_directory:
 system("dirsearch -u {} -o {} --format=json > /dev/null".format(URL_TARGET, (saving_path + ".list_json_directory.json")))
 
 with open(".list_json_directory.json", encoding="utf-8") as file:
@@ -192,17 +238,17 @@ for d in directory:
 
 sorted_directories = sorted(dir_list)
 
-print(Colors.BOLD + Colors.GREEN + "\n\t  [+] DIRECTORIES: %s" % len(sorted_directories) + Colors.RESET)
+print(co.bo + co.g + "\n\t  [+] DIRECTORIES: %s" % len(sorted_directories) + co.re)
 
 for d in sorted_directories:
 
 	format_host = get_host.replace("\n", "")
 
 	if (d[0] == 200):
-		# green alert
-		print(Colors.GREEN + "\t    -> " + Colors.RESET + Colors.GREEN
-				+ str(d[0]) + Colors.RESET + " | " +  Colors.BOLD + format_host + d[1] + Colors.RESET)
+		# g alert
+		print(co.g + "\t    -> " + co.re+ co.g
+				+ str(d[0]) + co.re+ " | " +  co.bo + format_host + d[1] + co.re)
 	
 	elif (d[0] == 403):
-		print(Colors.GREEN + "\t    -> " + Colors.RESET + Colors.YELLOW 
-				+ str(d[0]) + Colors.RESET + " | " +  Colors.BOLD + format_host + d[1] + Colors.RESET)
+		print(co.g + "\t    -> " + co.re+ co.ye 
+				+ str(d[0]) + co.re+ " | " +  co.bo + format_host + d[1] + co.re)
