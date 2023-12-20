@@ -24,7 +24,7 @@ class co:
     ye = "\33[33m"
 
 
-## 2.6 detect distro for install tools
+## 1.3 detect distro for install tools
 def distro():
     try:
         ## read os-release to check the distro
@@ -84,12 +84,12 @@ def remove_list_files(extension):
     system(f"rm -rf .list*.{extension}")
 
 
-## 1.4: preparing everything
+## 1.5: preparing everything
 saving_path = getcwd() + "/"
 port_scan = nmap.PortScanner()
 
 
-## 1.5: "welcome" screen
+## 1.6: "welcome" screen
 system("clear")
 print(co.g + co.bo + """
 \t          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
@@ -100,7 +100,7 @@ print(co.g + co.bo + """
           Coded by """ + co.re+ co.r + co.bo + """root@x-krypt0n-x A.K.A x0r""" + co.r + co.bo + """\n\t          System of Pekalongan""" +
 co.re)
 
-## 1.6: getting started
+## 1.7: getting started
 command_arguments = sys.argv[1:]
 
 if (len(command_arguments) > 0):
