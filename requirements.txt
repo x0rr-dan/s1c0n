@@ -1,0 +1,3 @@
+json
+requests
+python-nmap
