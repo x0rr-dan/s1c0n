@@ -1,24 +1,19 @@
 ## 1.1: importing dependencies
 from os import path, system, getcwd
-import os.path, subprocess, nmap, json, sys, time, re, importlib
+import os.path, subprocess, json, requests,json, sys, time, re
 
-# Check if a module is installed, and if not, install it
-def check_module(module_name, package_name):
-    try:
-        importlib.import_module(module_name)
-    except ImportError:
-        print(f"\n\t   [!] Error on import {module_name}")
-        user = os.getuid()
-        if user == 0:
-            pass
-        else:
-            print(f"{co.r}{co.bo}[!] {module_name} module is missing, run me with sudo i will install it{co.re}")
-        os.system(f"pip3 install {package_name}")
 
-# Check and install required modules
-check_module("nmap", "python-nmap")
-check_module("requests", "requests")
-check_module("json", "json")
+#lireq = ['python-nmap','requests','json']
+
+### ADD IMPROVEMENT U DUMP SHIT
+
+try:
+	import nmap
+	#import requests
+	#import json
+except ImportError as error:
+    print("\n\t   [!] Error on import", error)
+    system("pip3 install python-nmap")
 
 ## 1.2: defining classes & functions:
 class co:
@@ -29,6 +24,22 @@ class co:
     ye = "\33[33m"
 
 
+## 2.6 detect distro for install tools
+def distro():
+    try:
+        ## read os-release to check the distro
+        with open('/etc/os-release', 'r') as file:
+             lines = file.readlines()
+             for line in lines:
+                  if line.startswith('ID='):
+                       return line.split('=')[1].strip().strip('"')
+    except FileNotFoundError:
+         print("[-] /etc/os-release not found ...")
+         print("[*] Your not using linux ... if u using mac or other opratation system u should install tools manually")
+         pass
+    return None
+     
+
 ## 1.4 checking dependencies tools
 def check(tool):
     if os.path.exists(f"/usr/bin/{tool}"):
@@ -38,17 +49,25 @@ def check(tool):
         # checking user privileges
         user = os.getuid()
 
-        if user == 0:
-            pass
-        else:
-            print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
-            exit()
-        # installing missing requirements
+         # installing missing requirements
         print(f"{co.r}{co.bo}[!] {tool} missing{co.re}")
         print(f"{co.r}{co.bo}[!] installing {tool}{co.re}")
         time.sleep(0.2)
-        system(f"apt install {tool} -y")
-
+        dis = distro()
+        if dis == 'arch':
+            if tool == 'httprobe':
+                aur = f"{tool}-bin"
+            else:
+                aur = tool
+            system(f"yay -S --noconfirm {aur}")
+        elif dis == 'debian':
+             if user == 0:
+                  system(f"apt install {tool} -y")
+             else:
+                  print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
+                  exit()
+        else:
+             print("[!] ur not using linux ...")
 
 # requirements
 list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','amass','dirsearch','httprobe']
@@ -175,20 +194,27 @@ remove_list_files("txt")
 print(co.bo + co.g + "\n\t  [+] SUBDOMAINS DETECTED: %s" % len(subdomain_list) + co.re)
 
 for s in subdomain_list:
+    # Perform quick port scan using nmap
+    quick_scan = port_scan.scan(hosts=s, arguments="-F")
+    
+    # Check if 'scan' key exists in quick_scan
+    if "scan" in quick_scan:
+        host = list(quick_scan["scan"].keys())
+        if len(host) > 0:
+            # Check if 'tcp' key exists in quick_scan["scan"][host[0]]
+            if "tcp" in quick_scan["scan"][host[0]]:
+                tcp_open = str(list(quick_scan["scan"][host[0]]["tcp"].keys()))
+                print(co.re + co.g + "\t    -> " + co.re + co.bo + s + " | " + co.g + tcp_open + co.re)
+            else:
+                # 'tcp' key not found
+                print(co.re + co.g + "\t    -> " + co.re + co.bo + s + " | " + co.r + "No TCP ports found" + co.re)
+        else:
+            # Port scan failed
+            print(co.re + co.g + "\t    -> " + co.re + co.bo + s + " | " + co.r + "HOST OFFLINE" + co.re)
+    else:
+        # 'scan' key not found
+        print(co.re + co.g + "\t    -> " + co.re + co.bo + s + " | " + co.r + "Scan data not available" + co.re)
 
-	# perform quick port scan using nmap
-	quick_scan = port_scan.scan(hosts=s, arguments="-F")
-	host = list(quick_scan["scan"].keys())
-	
-	if (len(host) > 0):
-		# tcp ports were found
-		tcp_open = str(list(quick_scan["scan"][host[0]]["tcp"].keys()))
-		print(co.re+ co.g + "\t    -> " + co.re+ co.bo + s +
-										" | " +  co.g + tcp_open + co.re)
-	else:
-		# port scan failed
-		print(co.re+ co.g + "\t    -> " + co.re+ co.bo + s +
-										" | " +  co.r + "HOST OFFLINE" + co.re)
 
 ### checking cms 2.4:
 wp_regex = re.compile(r'wp-')
@@ -216,7 +242,35 @@ for url in not_cpanel_subdomain:
     except requests.exceptions.RequestException as e:
         print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | " +  co.r + "COULD NOT BE REACHED " + co.re)
 
-### 2.5: Bruteforcing json_directory:
+### 2.5 checking if any missconfiguration in wordpress site
+wp_install = re.compile(r'Welcome to WordPress. Before getting started, you will need to know the following items.')
+print(co.bo + co.g + "\n\t  [+] WP INSTALL DETECTION: " + co.re)
+# read all wordpress
+# Bug give a logic to check if there have a wp.txt
+with open("report_"+URL_TARGET, "wp.txt", encoding="utf-8") as file:
+    subdomain_wp = file.read().splitlines()
+# list path wp install
+list_install = ['/BACKUP','/BAK','/wordpress','/wordpress1']
+for wppp in subdomain_wp:
+    for ins in list_install:
+        try:
+            response = requests.get(wppp +ins, timeout=60)
+            if response.status_code == 200:
+                text = response.text
+                if wp_install.search(text):
+                    print(co.re + co.g + "\t    -> " + co.re+ co.bo + wppp + ins +" | Must be vulnerable with wp install"+ co.re)
+                    with open(os.path.join("report_"+URL_TARGET, "wp-install.txt"), "a") as f:
+                        f.write("http://"+ wppp + ins + "\n")
+                elif response.status_code == 404:
+                    print(co.re + co.g + "\t    -> " + co.re + co.bo + wppp + ins + " | " + co.r + "Not Found"+co.re)    
+                else:
+                    print(co.re + co.g + "\t    -> " + co.re+ co.bo + wppp + ins +" | " + co.r + "Not vuln"+ co.re)
+            else:
+                print(co.re + co.g + "\t    -> " + co.re+ co.bo + wppp +" | " + co.r + "Something wrong"+ co.re)
+        except requests.exceptions.ConnectionError:
+            print(co.re + co.g + "\t    -> "+ co.re + co.bo + wppp + ins + " | " + co.r + "Cant be reached host is offline" + co.re)
+
+### 2.6: Bruteforcing json_directory:
 system("dirsearch -u {} -o {} --format=json > /dev/null".format(URL_TARGET, (saving_path + ".list_json_directory.json")))
 
 with open(".list_json_directory.json", encoding="utf-8") as file:
