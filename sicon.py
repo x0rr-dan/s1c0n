@@ -66,6 +66,18 @@ def check(tool):
              else:
                   print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
                   exit()
+        elif dis == 'kali':
+             if user == 0:
+                  system(f"apt install {tool} -y")
+             else:
+                  print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
+                  exit()
+        elif dis == 'parrot':
+             if user == 0:
+                  system(f"apt install {tool} -y")
+             else:
+                  print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
+                  exit()
         else:
              print("[!] ur not using linux ...")
 
