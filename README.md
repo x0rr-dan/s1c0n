@@ -2,20 +2,21 @@
 ![Python](https://img.shields.io/badge/Python-3.9.2-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
-![Terkey](https://github-readme-stats.vercel.app/api/pin?username=root-x-krypt0n-x&repo=s1c0n&title_color=000&icon_color=000&text_color=000000&bg_color=ffffff)
+![Terkey](https://github-readme-stats.vercel.app/api/pin?username=root-x-krypt0n-x&repo=s1c0n&title_color=000&icon_color=000&text_color=000000&bg_color=000000)
 
 ```
 
 
-	          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
-	          ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-	          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.5 (not finish yet)
+	         ┏━┓╺┓ ┏━╸┏━┓┏┓╻
+	         ┗━┓ ┃ ┃  ┃┃┃┃┗┫
+	         ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.6
                 
                     Simple Recon
           Coded by root@x-krypt0n-x A.K.A x0r
-	          System of Pekalongan
+	https://github.com/root-x-krypt0n-x/s1c0n
+	         System of Pekalongan
 
-	   [?] Usage example: sicon -u target.com
+	  [?] Usage example: sicon -u target.com
 
 ```
 
@@ -31,11 +32,13 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 
 ## Tested on:
 - Othros linux
-- Kali linux
-- Debian linux
-
+- Kali Linux
+- Debian Linux
+- Parrot Linux
+- Arch Linux
+- 
 ## tools that must be installed:
-if you are using kali, parrot, You don't need to install it manually, this tool will install itself
+well this tool have function to auto install if some tools is not installed, so just run it with sudo if u using debian based
 ```
 nmap
 wafw00f
