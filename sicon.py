@@ -54,25 +54,17 @@ def check(tool):
         print(f"{co.r}{co.bo}[!] installing {tool}{co.re}")
         time.sleep(0.2)
         dis = distro()
-        if dis == 'arch':
-            if tool == 'httprobe':
-                aur = f"{tool}-bin"
+        if dis == ['arch']: # arch based, i only test this script in arch if any distro based on arch can run this, please add issue https://github.com/root-x-krypt0n-x/s1c0n
+            if os.path.exists(f"/usr/bin/yay"):
+                if tool == 'httprobe':
+                     aur = f"{tool}-bin"
+                else:
+                     aur = tool
+                     system(f"yay -S --noconfirm {aur}")
             else:
-                aur = tool
-            system(f"yay -S --noconfirm {aur}")
-        elif dis == 'debian':
-             if user == 0:
-                  system(f"apt install {tool} -y")
-             else:
-                  print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
-                  exit()
-        elif dis == 'kali':
-             if user == 0:
-                  system(f"apt install {tool} -y")
-             else:
-                  print(f"{co.r}{co.bo}[!] {tool} is missing, Please run me with sudo to install {tool}{co.re}")
-                  exit()
-        elif dis == 'parrot':
+                 print(f"{co.r}{co.bo}[!] yay is not installed, Please install yay and run this script again ...")
+            
+        elif dis == ['debian', 'kali', 'parrot']: # debian based u can add if u can, dont forget to add issue if any distro is not include but can install from apt https://github.com/root-x-krypt0n-x/s1c0n
              if user == 0:
                   system(f"apt install {tool} -y")
              else:
@@ -106,10 +98,10 @@ system("clear")
 print(co.g + co.bo + """
 \t          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
 \t          ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-\t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.5 (not finish yet)
+\t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.6
                 
                     Simple Recon
-          Coded by """ + co.re+ co.r + co.bo + """root@x-krypt0n-x A.K.A x0r""" + co.r + co.bo + """\n\t          System of Pekalongan""" +
+          Coded by """ + co.re+ co.r + co.bo + """root@x-krypt0n-x A.K.A x0r""" + co.ye + co.bo + """\n\thttps://github.com/root-x-krypt0n-x/s1c0n"""  + co.r + co.bo + """\n\t          System of Pekalongan""" +
 co.re)
 
 ## 1.7: getting started
