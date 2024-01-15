@@ -36,7 +36,7 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 - Debian Linux
 - Parrot Linux
 - Arch Linux
-- 
+
 ## tools that must be installed:
 well this tool have function to auto install if some tools is not installed, so just run it with sudo if u using debian based
 ```
