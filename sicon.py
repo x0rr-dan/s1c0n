@@ -74,7 +74,8 @@ def check(tool):
              print("[!] ur not using linux ...")
 
 # requirements
-list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','amass','dirsearch','httprobe']
+#list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','amass','dirsearch','httprobe']
+list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch','httprobe']
 for tool in list_tool:
     check(tool)
 
@@ -166,7 +167,7 @@ for p in ports_list:
 system("subfinder -d %s -o .list_subfinder.txt -silent > /dev/null" % URL_TARGET)
 system("sublist3r -d %s -o .list_sublist3r.txt > /dev/null" % URL_TARGET)
 system("assetfinder %s > .list_assetfinder.txt" % URL_TARGET)
-system("amass enum -d %s -o .list_amass.txt -silent" % URL_TARGET)
+#system("amass enum -d %s -o .list_amass.txt -silent" % URL_TARGET) not using amass tools bcs is the output is sucks
 
 # concat every output into one file
 system("cat .list*.txt > .list_subdomains.txt")
