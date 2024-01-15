@@ -45,7 +45,6 @@ wafw00f
 sublist3r
 subfinder
 assetfinder
-amass
 dirsearch
 httprobe
 ```
