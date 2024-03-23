@@ -20,6 +20,9 @@
 
 ```
 
+## Status
+some feature on development, i think will error if u using current update, will fix it ASAP
+
 ## About:
 simple recon tool to help you searching vulnerability on web server. maybe xD
 
