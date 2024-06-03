@@ -2,7 +2,7 @@
 ![Python](https://img.shields.io/badge/Python-3.9.2-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
-![Terkey](https://github-readme-stats.vercel.app/api/pin?username=root-x-krypt0n-x&repo=s1c0n&title_color=fff&icon_color=fff&text_color=ffffff&bg_color=000000)
+![Terkey](https://github-readme-stats.vercel.app/api/pin?username=x0rr-dan&repo=s1c0n&title_color=fff&icon_color=fff&text_color=ffffff&bg_color=000000)
 
 ```
 
