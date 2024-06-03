@@ -63,3 +63,7 @@ python3 sicon.py -u <target>
 ```
 
 ![fakme](https://user-images.githubusercontent.com/51450260/162648377-f453e31b-e75d-43af-96f7-5b8c4a5afb27.png)
+
+
+## note
+im too lazy to update this tool more readable or add some improvement, LOL, soon will update
