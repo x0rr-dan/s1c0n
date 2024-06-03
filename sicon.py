@@ -1,20 +1,16 @@
 ## 1.1: importing dependencies
-from os import path, system, getcwd
-import os.path, subprocess, json, requests,json, sys, time, re
+from os import path, system, getcwd, getuid, mkdir
+import subprocess
+import json
+import requests
+import sys
+import time 
+import re
 
 
 #lireq = ['python-nmap','requests','json']
 
 ### ADD IMPROVEMENT U DUMP SHIT
-
-try:
-	import nmap
-	#import requests
-	#import json
-except ImportError as error:
-    print("\n\t   [!] Error on import", error)
-    system("pip3 install python-nmap")
-
 ## 1.2: defining classes & functions:
 class co:
     re = "\33[0m"
@@ -22,8 +18,6 @@ class co:
     r = "\33[31m"
     g = "\33[32m"
     ye = "\33[33m"
-
-
 ## 1.3 detect distro for install tools
 def distro():
     try:
@@ -38,33 +32,46 @@ def distro():
          print("[*] Your not using linux ... if u using mac or other opratation system u should install tools manually")
          pass
     return None
+
+## detect if not intall python-nmap in arch based distro
+try:
+	import nmap
+except ImportError as error:
+    print("\n\t   [!] Error on import", error)
+    dis = distro()
+    if dis == 'arch':
+        print("\n\t   [!] Installing python-nmap...")
+        system("yay -S python-nmap --noconfirm")
+    else:
+        system("pip3 install python-nmap")
+
      
 
 ## 1.4 checking dependencies tools
 def check(tool):
-    if os.path.exists(f"/usr/bin/{tool}"):
+    if path.exists(f"/usr/bin/{tool}"):
         print(f"{co.g}{co.bo}[*] {tool} exist{co.re}")
         time.sleep(0.2)
     else:
         # checking user privileges
-        user = os.getuid()
-
+        user = getuid()
          # installing missing requirements
         print(f"{co.r}{co.bo}[!] {tool} missing{co.re}")
         print(f"{co.r}{co.bo}[!] installing {tool}{co.re}")
         time.sleep(0.2)
         dis = distro()
-        if dis == ['arch']: # arch based, i only test this script in arch if any distro based on arch can run this, please add issue https://github.com/root-x-krypt0n-x/s1c0n
-            if os.path.exists(f"/usr/bin/yay"):
+        if dis in ['arch','blackarch']: # arch based, i only test this script in arch if any distro based on arch can run this, please add issue https://github.com/root-x-krypt0n-x/s1c0n
+            if path.exists("/usr/bin/yay"):
                 if tool == 'httprobe':
-                     aur = f"{tool}-bin"
+                    aur = f"{tool}-bin" if tool == 'httprobe' else tool
+                    system(f"yay -S --noconfirm {aur}")
                 else:
                      aur = tool
                      system(f"yay -S --noconfirm {aur}")
             else:
                  print(f"{co.r}{co.bo}[!] yay is not installed, Please install yay and run this script again ...")
             
-        elif dis == ['debian', 'kali', 'parrot']: # debian based u can add if u can, dont forget to add issue if any distro is not include but can install from apt https://github.com/root-x-krypt0n-x/s1c0n
+        elif dis in ['debian', 'kali', 'parrot']: # debian based u can add if u can, dont forget to add issue if any distro is not include but can install from apt https://github.com/root-x-krypt0n-x/s1c0n
              if user == 0:
                   system(f"apt install {tool} -y")
              else:
@@ -121,7 +128,14 @@ else:
 	break_and_help()
 
 
-os.mkdir("report_"+URL_TARGET)
+def create_report_folder(target):
+    folder_name = f"report_{target}"
+    if not path.exists(folder_name):
+        mkdir(folder_name)
+        # print(f"Folder '{folder_name}' created.")
+    else:
+        pass
+create_report_folder(URL_TARGET)
 ## 2.0: Starting recon phase:
 print(co.bo + co.g + "\n\t[*] Starting recon on %s:" % URL_TARGET + co.re)
 
@@ -184,11 +198,11 @@ cpanel_subdomain = [subdomain_list for subdomain_list in subdomain_list if subdo
 not_cpanel_subdomain = [subdomain_list for subdomain_list in subdomain_list if not subdomain_list.startswith(("cpanel.", "webdisk.", "webmail.", "cpcontacts.", "whm.", "autoconfig.", "mail.", "cpcalendars.", "autodiscover."))]
 
 # Save cpanel subdomains to file
-with open(os.path.join("report_"+URL_TARGET, "cpanel_subdomain.txt"), "w") as f:
+with open(path.join("report_"+URL_TARGET, "cpanel_subdomain.txt"), "w") as f:
     f.write("\n".join(cpanel_subdomain))
 
 # Save other subdomains to file, creating the file if it does not exist
-with open(os.path.join("report_"+URL_TARGET, "subdomain.txt"), "w") as f:
+with open(path.join("report_"+URL_TARGET, "subdomain.txt"), "w") as f:
     if not_cpanel_subdomain:
         f.write("\n".join(not_cpanel_subdomain))
     else:
@@ -234,11 +248,11 @@ for url in not_cpanel_subdomain:
             text = response.text
             if wp_regex.search(text):
                 print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | Wordpress" + co.re)
-                with open(os.path.join("report_"+URL_TARGET, "wp.txt"), "a") as f:
+                with open(path.join("report_"+URL_TARGET, "wp.txt"), "a") as f:
                     f.write("http://"+ url + "\n")
             elif joomla_regex.search(text):
                 print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | Joomla" + co.re)
-                with open(os.path.join("report_"+URL_TARGET, "joomla.txt"), "a") as f:
+                with open(path.join("report_"+URL_TARGET, "joomla.txt"), "a") as f:
                     f.write("http://"+ url + "\n")
             else:
                 print(co.re + co.g + "\t    -> " + co.re+ co.bo + url +" | " +  co.r + "FAIL DETECT CMS" + co.re)
@@ -264,7 +278,7 @@ for wppp in subdomain_wp:
                 text = response.text
                 if wp_install.search(text):
                     print(co.re + co.g + "\t    -> " + co.re+ co.bo + wppp + ins +" | Must be vulnerable with wp install"+ co.re)
-                    with open(os.path.join("report_"+URL_TARGET, "wp-install.txt"), "a") as f:
+                    with open(path.join("report_"+URL_TARGET, "wp-install.txt"), "a") as f:
                         f.write("http://"+ wppp + ins + "\n")
                 elif response.status_code == 404:
                     print(co.re + co.g + "\t    -> " + co.re + co.bo + wppp + ins + " | " + co.r + "Not Found"+co.re)    
