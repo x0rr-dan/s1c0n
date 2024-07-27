@@ -324,17 +324,17 @@ def main():
         flag = command_arguments[0].upper()
         if flag == "-U" or flag == "--URL":
             URL_TARGET = command_arguments[1]
+            # 2.3 scanning
+            print(f"{Color.bold}{Color.green}\n\t[*] Starting recon on : {URL_TARGET}{Color.reset}")
+            waf_scanning(URL_TARGET)
+            port_scanning(URL_TARGET)
+            subdo_scanning(URL_TARGET)
+            more_info(URL_TARGET)
+            cms_detection(URL_TARGET)
+            scan_dir(URL_TARGET)
         else:
             break_and_help()
     else:
         break_and_help()
-    # 2.3 scanning
-    print(f"{Color.bold}{Color.green}\n\t[*] Starting recon on : {URL_TARGET}{Color.reset}")
-    waf_scanning(URL_TARGET)
-    port_scanning(URL_TARGET)
-    subdo_scanning(URL_TARGET)
-    more_info(URL_TARGET)
-    cms_detection(URL_TARGET)
-    scan_dir(URL_TARGET)
 if __name__ == "__main__":
     main()
