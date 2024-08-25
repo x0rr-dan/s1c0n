@@ -12,9 +12,8 @@
 	         ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.7
                 
                     Simple Recon
-          Coded by root@x-krypt0n-x A.K.A x0r
-	https://github.com/root-x-krypt0n-x/s1c0n]
-	         System of Pekalongan
+		    Coded by x0r
+	https://github.com/x0rr-dan/s1c0n]
 
 	  [?] Usage example: sicon -u target.com
 
