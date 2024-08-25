@@ -13,7 +13,7 @@
                 
                     Simple Recon
 		    Coded by x0r
-	https://github.com/x0rr-dan/s1c0n]
+	https://github.com/x0rr-dan/s1c0n
 
 	  [?] Usage example: sicon -u target.com
 
