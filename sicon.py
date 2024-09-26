@@ -92,7 +92,7 @@ def logo():
     \t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.7
 
                         Simple Recon
-              Coded by """ + Color.reset + Color.red + Color.bold + """root@x-krypt0n-x A.K.A x0r""" + Color.yellow + Color.bold + """\n\thttps://github.com/x0rr-dan/s1c0n"""  + Color.red + Color.bold + """\n\t          System of Pekalongan""" + Color.red)
+              Coded by """ + Color.reset + Color.red + Color.bold + """x0r""" + Color.yellow + Color.bold + """\n\thttps://github.com/x0rr-dan/s1c0n"""  + Color.red + Color.bold + """\n\t          System of Pekalongan""" + Color.red)
 # 1.4 help
 def break_and_help():
     print("\n\t   [?] Usage example: sicon -u target.com")
