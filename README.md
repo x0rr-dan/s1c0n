@@ -9,7 +9,7 @@
 
 	         ┏━┓╺┓ ┏━╸┏━┓┏┓╻
 	         ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-	         ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.7
+	         ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.8
                 
                     Simple Recon
 		    Coded by x0r
@@ -62,7 +62,9 @@ pip3 install -r requirements.txt
 python3 sicon.py -u <target>
 ```
 
-![fakme](https://user-images.githubusercontent.com/51450260/162648377-f453e31b-e75d-43af-96f7-5b8c4a5afb27.png)
+![image](https://github.com/user-attachments/assets/39816ddf-439a-42a1-b4f7-96fa78875dbc)
+
+![241110_20h09m28s_screenshot](https://github.com/user-attachments/assets/41ea5d93-8a3b-457d-b2ac-e60e3a2c24fe)
 
 ![Screenshot from 2024-07-14 21-27-04](https://github.com/user-attachments/assets/4c15a5a6-d34f-4ce8-9ce8-16c09e5783a5)
 
