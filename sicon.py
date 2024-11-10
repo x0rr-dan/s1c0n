@@ -7,7 +7,9 @@ import sys
 import time
 import re
 import builtwith
+import time
 import urllib.error
+from concurrent.futures import ThreadPoolExecutor, as_completed
 # import nmap
 
 # color text
@@ -46,7 +48,7 @@ def check(tool):
         print(f"{Color.red}{Color.bold}[!] installing {tool}{Color.reset}")
         time.sleep(0.2)
         dis = distro()
-        if dis in ['arch','blackarch']: # arch based, i only test this script in arch if any distro based on arch can run this, please add issue https://github.com/root-x-krypt0n-x/s1c0n
+        if dis in ['arch','blackarch']:
             if path.exists("/usr/bin/yay"):
                 if tool == 'httprobe':
                     aur = f"{tool}-bin" if tool == 'httprobe' else tool
@@ -69,7 +71,7 @@ def check(tool):
             else:
                  print(f"{Color.re}{Color.bold}[!] yay is not installed, Please install yay and run this script again ...")
             
-        elif dis in ['kali', 'parrot']: # debian based u can add if u can, dont forget to add issue if any distro is not include but can install from apt https://github.com/root-x-krypt0n-x/s1c0n
+        elif dis in ['kali', 'parrot']:
              if user == 0:
                   process = subprocess.run(f"apt install {tool} -y")
                   if process.returncode != 0:
@@ -87,12 +89,12 @@ def check(tool):
 def logo():
     system("clear")
     print(Color.green + Color.bold + """
-    \t          ┏━┓╺┓ ┏━╸┏━┓┏┓╻
-    \t          ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-    \t          ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.7
+    \t              ┏━┓╺┓ ┏━╸┏━┓┏┓╻
+    \t              ┗━┓ ┃ ┃  ┃┃┃┃┗┫
+    \t              ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.8
 
                         Simple Recon
-              Coded by """ + Color.reset + Color.red + Color.bold + """x0r""" + Color.yellow + Color.bold + """\n\thttps://github.com/x0rr-dan/s1c0n"""  + Color.red + Color.bold + """\n\t          System of Pekalongan""" + Color.red)
+                        Coded by """ + Color.reset + Color.red + Color.bold + """x0r""" + Color.yellow + Color.bold + """\n\t       https://github.com/x0rr-dan/s1c0n"""  + Color.red + Color.bold + """\n\t           Dinus Open Source Community""" + Color.red)
 # 1.4 help
 def break_and_help():
     print("\n\t   [?] Usage example: sicon -u target.com")
@@ -205,8 +207,10 @@ def subdo_scanning(target):
 
 # 1.9 checking cms
 def cms_detection(target):
-    wgex = re.compile(r'wp-')
-    jgex = re.compile(r'joomla')
+    wgex = re.compile(r'(?:<meta name="generator" content="WordPress|/wp-content/)') # wordpress
+    jgex = re.compile(r'(?:<meta name="generator" content="Joomla|/media/system/js/)') # joomla
+    druex = re.compile(r'(?:<meta name="generator" content="Drupal|/sites/all/)') # drupal
+    moex = re.compile(r'(?:<meta name="keywords" content="moodle|/core/)') # moodle
     with open(f"report_{target}/subdomain.txt", 'r', encoding='utf-8') as r:
         read_subdo = r.readlines()
     print(f"{Color.bold}{Color.green}\n\t  [+] CMS DETECTION: {len(read_subdo)} sites{Color.reset}")
@@ -224,8 +228,16 @@ def cms_detection(target):
                     print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} | {Color.green}Joomla{Color.reset}")
                     with open(path.join(f"report_{target}", "joomla.txt"), "a") as f:
                         f.write("http://"+ url + "\n")
+                elif druex.search(text):
+                    print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} | {Color.green}Drupal{Color.reset}")
+                    with open(path.join(f"report_{target}", "drupal.txt"), "a") as f:
+                        f.write("http://"+ url + "\n")
+                elif moex.search(text):
+                    print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} | {Color.green}Moodle{Color.reset}")
+                    with open(path.join(f"report_{target}", "moodle.txt"), "a") as f:
+                        f.write("http://"+ url + "\n")
                 else:
-                    print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} | {Color.yellow}FAIL DETECT CMS{Color.reset}")
+                    pass
             else:
                 print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} | {Color.red}ERROR {str(response.status_code)}{Color.reset}")
         except requests.exceptions.RequestException:
@@ -235,33 +247,36 @@ def cms_detection(target):
 def scan_dir(target):
     path = f"{getcwd()}/"
     system(f"dirsearch -u {target} -o {path}.list_dir.json --format=json > /dev/null")
-    with open(".list_dir.json", encoding="utf-8") as dir:
-        jdir = json.load(dir)
-    clean("json")
-    dir_found = jdir["results"]
-    list_dir_found = []
-    for d in dir_found:
-        path_dir = d["url"]
-        status_dir = d["status"]
-        if status_dir in {200, 403, 500}:
-            list_dir_found.append([status_dir, path_dir])
-    
-    sorted_dir = sorted(list_dir_found)
-    print(f"{Color.bold}{Color.green}\n\t  [+] DIRECTORIES: {len(sorted_dir)}{Color.reset}")
-    for d in sorted_dir:
-        if d[0] == 200:
-            print(f"{Color.green}\t    -> {Color.reset}{Color.green}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
-        elif d[0] == 403:
-            print(f"{Color.green}\t    -> {Color.reset}{Color.yellow}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
-        elif d[0] == 500:
-            print(f"{Color.green}\t    -> {Color.reset}{Color.red}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
+    if path.exist(f"{target}/.list_dir.json"):
+        with open(".list_dir.json", encoding="utf-8") as dir:
+            jdir = json.load(dir)
+            if jdir:
+                clean("json")
+                dir_found = jdir["results"]
+                list_dir_found = []
+                for d in dir_found:
+                    path_dir = d["url"]
+                    status_dir = d["status"]
+                    if status_dir in [200, 403, 500, 404]:
+                        list_dir_found.append([status_dir, path_dir])
 
-# 1.11 more information about target, showing the technoloy that target use, but there is bug, when target is unreachable it will show error message  from librarry urillib that idk how to hide that error
-def remove_color_codes(text):
-    """Hapus kode warna ANSI dari teks."""
-    ansi_escape = re.compile(r'\x1b[^m]*m')
-    return ansi_escape.sub('', text)
+                sorted_dir = sorted(list_dir_found)
+                print(f"{Color.bold}{Color.green}\n\t  [+] DIRECTORIES: {len(sorted_dir)}{Color.reset}")
+                for d in sorted_dir:
+                    if d[0] == 200:
+                        print(f"{Color.green}\t    -> {Color.reset}{Color.green}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
+                    elif d[0] == 403:
+                        print(f"{Color.green}\t    -> {Color.reset}{Color.red}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
+                    elif d[0] == 500:
+                        print(f"{Color.green}\t    -> {Color.reset}{Color.red}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
+                    elif d[0] == 404:
+                        print(f"{Color.green}\t    -> {Color.reset}{Color.yellow}{str(d[0])}{Color.reset} | {Color.bold} {d[1]}{Color.reset}")
+            else:
+                print(f"{Color.bold}{Color.red}\n\t  [-] DIRECTORIES SCANNER CANT FIND ANYTHING USEFULL{Color.reset}")
+    else:
+        print(f"{Color.bold}{Color.red}\n\t [-] Something wrong went running dirsearch for directory scanner{Color.reset}")
 
+# 1.11 detecting technology but have some bug in output
 def more_info(target):  
     try:
         with open(f"report_{target}/subdomain.txt", 'r', encoding='utf-8') as r:
@@ -269,13 +284,12 @@ def more_info(target):
         
         print(f"{Color.bold}{Color.green}\n\t  [+] WEB TECHNOLOGY: {len(read_subdo)} sites{Color.reset}")
         
-        # Menyiapkan file output
         output_file_path = f"report_{target}/subdomain_with_tech.txt"
         with open(output_file_path, 'w', encoding='utf-8') as output_file:
             for url in read_subdo:
                 url = f"https://{url.strip()}"
                 try:
-                    # Mendapatkan informasi teknologi dari builtwith
+                    # detected technology target using builtwith
                     data = builtwith.builtwith(url)
                     keys_of_interest = ['web-servers', 'javascript-frameworks', 'web-frameworks']
                     technologies = []
@@ -284,7 +298,7 @@ def more_info(target):
                             technologies.extend(data[key])
                     technologies_str = " | ".join(technologies) if technologies else f"{Color.red}No technology detected"
                     
-                    # Menambahkan deteksi Laravel
+                    # detected laravel from cookie
                     try:
                         response = requests.get(url)
                         cookies = response.cookies
@@ -292,11 +306,6 @@ def more_info(target):
                             technologies_str += " | Laravel"
                     except requests.exceptions.RequestException:
                         technologies_str += " | Failed to retrieve data"
-                    
-                    # Menulis hasil ke file tanpa kode warna
-                    output_file.write(f"{url} | {remove_color_codes(technologies_str)}\n")
-                    
-                    # Menampilkan hasil di konsol dengan kode warna
                     print(f"{Color.green}\t    -> {Color.reset}{Color.bold}{url} {Color.reset}| {Color.bold}{Color.green}[{technologies_str}{Color.green}]{Color.reset}")
 
                 except urllib.error.URLError as e:
@@ -312,6 +321,129 @@ def more_info(target):
     except FileNotFoundError:
         print(f"{Color.red}File report_{target}/subdomain.txt not found.{Color.reset}")
 
+# 1.12 wp plugin enum
+# wp enum, scan user, plugin etc
+# wp enum i think done but idk, it will update soon
+# wp user enum is under development
+def wp_enum(target):
+    # read wordpress file that save in folder report
+    if path.exists(f"report_{target}/wp.txt"):
+        with open(f"report_{target}/wp.txt", 'r', encoding='utf-8') as r:
+            read_subdo = r.readlines()
+            print(f"{Color.bold}{Color.green}\n\t  [+] WORDPRESS ENUMERATION: {len(read_subdo)} sites{Color.reset}")
+            for i in read_subdo:
+                i = i.strip()
+                wpplugin(i)
+                time.sleep(5)
+    else:
+        pass
+# checking in index that have any plugin
+def wpplugin(target_site):
+    try:
+        quest = requests.get(target_site, timeout=10)
+        p = quest.text
+        plugins = set(re.findall(r"/wp-content/plugins/([a-zA-Z0-9\-]+)/", p))
+
+        if plugins:
+            with ThreadPoolExecutor(max_workers=20) as executor:
+                futures = [executor.submit(check_plugin, target_site, plugin, p) for plugin in plugins]
+                for future in as_completed(futures):
+                    future.result()
+
+        else:
+            print(f"{Color.green}\t     -> {Color.reset}{Color.bold}{target_site} [{Color.red} CANT FIND ANY PLUGIN {Color.reset}{Color.bold}]{Color.reset}")
+
+    except requests.Timeout:
+            print(f"{Color.red}\t     -> {Color.reset}{Color.bold}{target_site} {Color.reset}[{Color.red}{Color.bold} Request time out{Color.reset}]")
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+
+# check plugin if there is a changelog or readme in inside plugin folder
+# overall this technique is helpfull
+def check_plugin(target_site, plugin, page_content):
+    detect = set()
+    for file in ["changelog.txt", "readme.txt"]:
+        try:
+            e = requests.get(f"{target_site}/wp-content/plugins/{plugin}/{file}", timeout=10)
+            if e.status_code == 200:
+                topver = re.search(r"== Changelog ==\s+= ([\d.]+) - (\d{4}-\d{2}-\d{2}) =", e.text) or \
+                         re.search(r"= ([\d.]+) - (\d{4}-\d{2}-\d{2}) =", e.text)
+                if topver:
+                    versi = topver.group(1)
+                    detect.add(plugin)
+                    cek_db(target_site, plugin, versi)
+                    return
+        
+        except requests.Timeout:
+            print(f"{Color.red}\t     -> {Color.reset}{Color.bold}{target_site} {Color.reset}[{Color.red}{Color.bold} Request time out{Color.reset}]")
+        except requests.exceptions.RequestException:
+            continue
+
+    if plugin not in detect:
+        assets = [f"{target_site}/wp-content/plugins/{plugin}/plugin.php",
+                  f"{target_site}/wp-content/plugins/{plugin}/style.css",
+                  f"{target_site}/wp-content/plugins/{plugin}/script.js"]
+        for asset in assets:
+            try:
+                a = requests.get(asset, timeout=10)
+                version_in_header = re.search(r"Version:\s*([\d.]+)", a.text)
+                if version_in_header:
+                    versi = version_in_header.group(1)
+                    detect.add(plugin)
+                    cek_db(target_site, plugin, versi)
+                    return
+
+            except requests.Timeout:
+                print(f"{Color.red}\t     -> {Color.reset}{Color.bold}{target_site} {Color.reset}[{Color.red}{Color.bold} Request time out{Color.reset}]")
+            except requests.exceptions.RequestException:
+                continue
+
+    if plugin not in detect:
+        meta_version = re.search(rf"{plugin}.*?ver=([\d.]+)", page_content)
+        if meta_version:
+            versi = meta_version.group(1)
+            detect.add(plugin)
+            cek_db(target_site, plugin, versi)
+
+# check if plugin version is last update
+def cek_db(target_site, plugin, versi):
+    try:
+        url = f"https://wordpress.org/plugins/{plugin}/"
+        rq = requests.get(url, timeout=10)
+        version_match = re.search(r"Version\s*<strong>([\d.]+)</strong>", str(rq.text))
+        ver = version_match.group(1) if version_match else f"cant find last version of plugin {plugin}"
+        if versi < ver:
+            print(f"{Color.green}\t     -> {Color.reset}{Color.bold}{target_site} [{Color.green} {plugin} {Color.reset}| {Color.reset}{Color.green}{versi}{Color.reset} ]{Color.reset}")
+            cek_vuln(plugin, versi)
+        elif versi == ver:
+            print(f"{Color.yellow}\t     -> {Color.reset}{Color.bold}{target_site} [{Color.yellow} {plugin} {Color.reset}| {Color.reset}{Color.red}{versi}{Color.reset} | {Color.bold}{Color.red}updated{Color.reset} ]")
+        else:
+            print(f"{Color.red}\t     -> {Color.reset}{Color.bold}{target_site} [{Color.red} {plugin} {Color.reset}| {Color.reset}{Color.red}{versi} {Color.reset}| {Color.bold}{Color.red} can't find exact version{Color.reset} ]")
+    except requests.exceptions.RequestException:
+        print(f"{Color.red}\t     -> {Color.reset}{Color.bold}{target_site} [{Color.red} {plugin} {Color.reset}| {Color.reset}{Color.red}{versi} {Color.reset}| {Color.bold}{Color.red} failed to check last version{Color.reset} ]")
+
+# check if the plugin is out of date then compare it in wpscan, and scrap it if found the version if vulnerable based on version plugin
+def cek_vuln(plugin, versi):
+    try:
+        wpscan = f"https://wpscan.com/plugin/{plugin}"
+        rscan = requests.get(wpscan, timeout=10).text
+        
+        version_pattern = r"Fixed in\s+(\d+\.\d+\.\d+)"
+        title_pattern = r'Title\s*</div>\s*<a href="[^"]+">\s*([^<]+)'
+        
+        versions = re.findall(version_pattern, rscan)
+        titles = re.findall(title_pattern, rscan)
+        
+        for vuln_version, title in zip(versions, titles):
+            try:
+                if tuple(map(int, versi.split('.'))) <= tuple(map(int, vuln_version.split('.'))):
+                    print(f"{Color.green}\t\t[+]{Color.reset} {Color.bold}{plugin}{Color.reset} with version {versi} is {Color.green}{Color.bold}vulnerable{Color.reset}\n\t\t   {Color.green}->{Color.reset} {Color.yellow}{Color.bold}{title}{Color.reset}")
+            except ValueError:
+                print("[-] Error parsing version numbers.")
+    except requests.exceptions.RequestException:
+        print(f"{Color.red}\t\t[!] Failed to retrieve vulnerability information for {plugin}{Color.reset}")
+
+
 def main():
     # 2.1 checking another tools that help this code run
     list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch','httprobe']
@@ -325,16 +457,21 @@ def main():
         if flag == "-U" or flag == "--URL":
             URL_TARGET = command_arguments[1]
             # 2.3 scanning
-            print(f"{Color.bold}{Color.green}\n\t[*] Starting recon on : {URL_TARGET}{Color.reset}")
-            waf_scanning(URL_TARGET)
-            port_scanning(URL_TARGET)
-            subdo_scanning(URL_TARGET)
-            more_info(URL_TARGET)
-            cms_detection(URL_TARGET)
-            scan_dir(URL_TARGET)
+            try:
+                print(f"{Color.bold}{Color.green}\n\t[*] Starting recon on : {URL_TARGET}{Color.reset}")
+                waf_scanning(URL_TARGET)
+                port_scanning(URL_TARGET)
+                subdo_scanning(URL_TARGET)
+                more_info(URL_TARGET)
+                cms_detection(URL_TARGET)
+                wp_enum(URL_TARGET)
+                scan_dir(URL_TARGET)
+            except KeyboardInterrupt:
+                print(f"{Color.bold}[!] Keyboard Interupt\n[!] Exit ... {Color.reset}")
         else:
             break_and_help()
     else:
         break_and_help()
+
 if __name__ == "__main__":
     main()
