@@ -1,7 +1,7 @@
 from core.color import Color
 import requests
 import builtwith
-from requests.exceptions import Timeout
+from requests.exceptions import Timeout, RequestException
 
 def more_info(target):  
     try:
@@ -18,17 +18,22 @@ def more_info(target):
 
                 try:
                     # detected technology target using builtwith
-                    r = requests.get(url)
-                    if r.status_code == 200:
-                        data = builtwith.builtwith(url)
-                        keys_of_interest = ['programming-language', 'cms', 'web-servers', 'javascript-frameworks', 'web-frameworks']
-                        technologies = []
-                        for key in keys_of_interest:
-                            if key in data:
-                                technologies.extend(data[key])
-                        technologies_str = " | ".join(technologies) if technologies else f"{Color.red}No technology detected{Color.reset}"
-                    else:
-                        technologies_str += f"{Color.red}Error code: {r.status_code}{Color.reset}"
+                    try:
+                        r = requests.get(url, timeout=10)
+                        if r.status_code == 200:
+                            data = builtwith.builtwith(url)
+                            keys_of_interest = ['programming-language', 'cms', 'web-servers', 'javascript-frameworks', 'web-frameworks']
+                            technologies = []
+                            for key in keys_of_interest:
+                                if key in data:
+                                    technologies.extend(data[key])
+                            technologies_str = " | ".join(technologies) if technologies else f"{Color.red}No technology detected{Color.reset}"
+                        else:
+                            technologies_str += f"{Color.red}Error code: {r.status_code}{Color.reset}"
+                    except Timeout:
+                        pass
+                    except RequestException:
+                        pass
 
                     try:
                         response = requests.get(url, timeout=10)  # Timeout 10 sec
@@ -37,7 +42,7 @@ def more_info(target):
                             technologies_str += " | Laravel"
                     except Timeout:
                         technologies_str += f" | {Color.red}Timeout{Color.reset}"
-                    except requests.exceptions.RequestException:
+                    except RequestException:
                         technologies_str += f" | {Color.red}Failed to retrieve data{Color.reset}"
 
                     # Print to console
