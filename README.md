@@ -64,10 +64,9 @@ python3 sicon.py -u <target>
 
 ![image](https://github.com/user-attachments/assets/39816ddf-439a-42a1-b4f7-96fa78875dbc)
 
-![241110_20h09m28s_screenshot](https://github.com/user-attachments/assets/41ea5d93-8a3b-457d-b2ac-e60e3a2c24fe)
 
-![Screenshot from 2024-07-14 21-27-04](https://github.com/user-attachments/assets/4c15a5a6-d34f-4ce8-9ce8-16c09e5783a5)
-
-
-## note
-So far I have tried to eliminate the error output from the webserver which is offline when detecting the technology used, the error comes from the builtwith library which requires urllib, and I don't know how to eliminate the error, if you find a way please pull request to contribute :)
+## next features
+- [ ] wordpress user enumeration
+- [ ] report scan in html output
+- [ ] option to use proxy
+- [ ] user agent customization
