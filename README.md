@@ -62,7 +62,10 @@ pip3 install -r requirements.txt
 python3 sicon.py -u <target>
 ```
 
-![image](https://github.com/user-attachments/assets/39816ddf-439a-42a1-b4f7-96fa78875dbc)
+## screenshoot
+![241114_22h10m05s_screenshot](https://github.com/user-attachments/assets/9ea9ed46-c513-4313-911f-be44d1a78881)
+![241114_22h10m15s_screenshot](https://github.com/user-attachments/assets/b8897318-9fea-4d59-bd3f-52d9fb3158d8)
+![241114_22h10m25s_screenshot](https://github.com/user-attachments/assets/b308f15f-c6e9-4597-b083-f43eba3c9e7c)
 
 
 ## next features
