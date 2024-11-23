@@ -30,8 +30,9 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 2. Auto scan port
 3. Auto scan subdomain
 4. Auto scan dir on web server
-5. Auto detect cms (only wordpress and joomla, i will add another cms if i have time to update this tool :) )
-6. Auto detect technology (like the server are use, framework, javascript framework, etc. thanks to builtwith librarry :) )
+5. wordpress plugin enumeration
+6. Auto detect cms (wordpress, joomla. drupal, moodle)
+7. Auto detect technology (like the server are use, framework, javascript framework, etc. thanks to builtwith librarry :) )
 
 ## Tested on:
 - Othros linux
@@ -73,3 +74,4 @@ python3 sicon.py -u <target>
 - [ ] report scan in html output
 - [ ] option to use proxy
 - [ ] user agent customization
+- [ ] custom scan option (maybe with argparse or just simple input)
