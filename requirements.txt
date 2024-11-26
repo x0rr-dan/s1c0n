@@ -1,5 +1,4 @@
 PyQt5
-json
 requests
 python-nmap
 builtwith
