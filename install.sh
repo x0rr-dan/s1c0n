@@ -8,7 +8,7 @@ RESET="\033[0m"
 echo -e "${GREEN}=== Installer for S1C0N ===${RESET}"
 
 # Update sistem
-echo -e "${GREEN}[+] Updating and upgrading system...${RESET}"
+echo -e "${GREEN}[+] Updating system...${RESET}"
 sudo apt update -y || { echo -e "${RED}[-] Failed to update system${RESET}"; exit 1; }
 
 # Fungsi untuk mengecek apakah sebuah perintah tersedia
@@ -69,7 +69,7 @@ else
     pip3 install -r requirements.txt || { echo -e "${RED}[-] Failed to install Dirsearch requirements${RESET}"; exit 1; }
     cd ..
     sudo ln -s "$(pwd)/dirsearch/dirsearch.py" /usr/local/bin/dirsearch
-    chmod +x "$(pwd)/dirsearch/dirsearch.py"
+    sudo apt install -y dirsearch || { echo -e "${RED}[-] Failed to install dirsearch${RESET}"; exit 1; }
 fi
 
 # Install Httprobe 
