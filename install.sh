@@ -64,12 +64,8 @@ if [ -d "dirsearch" ]; then
 else
     echo -e "${GREEN}[+] Installing Dirsearch...${RESET}"
     git clone https://github.com/maurosoria/dirsearch.git || { echo -e "${RED}[-] Failed to clone Dirsearch${RESET}"; exit 1; }
-    cd dirsearch || { echo -e "${RED}[-] Failed to access dirsearch directory${RESET}"; exit 1; }
-    echo -e "${GREEN}[+] Installing Dirsearch requirements...${RESET}"
-    pip3 install -r requirements.txt || { echo -e "${RED}[-] Failed to install Dirsearch requirements${RESET}"; exit 1; }
-    cd ..
-    sudo ln -s "$(pwd)/dirsearch/dirsearch.py" /usr/local/bin/dirsearch
-    sudo apt install -y dirsearch || { echo -e "${RED}[-] Failed to install dirsearch${RESET}"; exit 1; }
+    sudo ln -s "$(pwd)/dirsearch/dirsearch.py" /usr/bin/dirsearch
+    sudo apt install dirsearch || { echo -e "${RED}[-] Failed to install dirsearch${RESET}"; exit 1; }
 fi
 
 # Install Httprobe 
