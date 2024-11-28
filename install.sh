@@ -7,6 +7,10 @@ RESET="\033[0m"
 
 echo -e "${GREEN}=== Installer for S1C0N ===${RESET}"
 
+# Update dan upgrade sistem
+echo -e "${GREEN}[+] Updating system...${RESET}"
+sudo apt update || { echo -e "${RED}[-] Failed to update system${RESET}"; exit 1; }
+
 # Fungsi untuk mengecek apakah sebuah perintah tersedia
 command_exists() {
     command -v "$1" &> /dev/null
@@ -41,15 +45,14 @@ else
     cd ..
 fi
 
-# Install Subfinder
+# Install Subfinder using GoLang
 if command_exists subfinder; then
     echo -e "${GREEN}[✓] Subfinder is already installed${RESET}"
 else
-    echo -e "${GREEN}[+] Installing Subfinder...${RESET}"
-    curl -Lo subfinder.zip https://github.com/projectdiscovery/subfinder/releases/latest/download/subfinder-linux-amd64.zip || { echo -e "${RED}[-] Failed to download Subfinder${RESET}"; exit 1; }
-    unzip subfinder.zip
-    sudo mv subfinder /usr/local/bin/ && sudo chmod +x /usr/local/bin/subfinder
-    rm -f subfinder.zip
+    echo -e "${GREEN}[+] Installing Subfinder using GoLang...${RESET}"
+    sudo apt install -y golang-go || { echo -e "${RED}[-] Failed to install GoLang${RESET}"; exit 1; }
+    go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest || { echo -e "${RED}[-] Failed to install Subfinder with GoLang${RESET}"; exit 1; }
+    sudo cp ~/go/bin/subfinder /usr/local/bin/ && sudo chmod +x /usr/local/bin/subfinder
 fi
 
 # Install Assetfinder
