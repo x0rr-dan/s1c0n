@@ -9,7 +9,7 @@ echo -e "${GREEN}=== Installer for S1C0N ===${RESET}"
 
 # Update dan upgrade sistem
 echo -e "${GREEN}[+] Updating and upgrading system...${RESET}"
-sudo apt update && sudo apt upgrade -y || { echo -e "${RED}[-] Failed to update system${RESET}"; exit 1; }
+sudo apt update -y || { echo -e "${RED}[-] Failed to update system${RESET}"; exit 1; }
 
 # Fungsi untuk mengecek apakah sebuah perintah tersedia
 command_exists() {
