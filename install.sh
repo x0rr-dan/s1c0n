@@ -7,7 +7,7 @@ RESET="\033[0m"
 
 echo -e "${GREEN}=== Installer for S1C0N ===${RESET}"
 
-# Update dan upgrade sistem
+# Update sistem
 echo -e "${GREEN}[+] Updating and upgrading system...${RESET}"
 sudo apt update -y || { echo -e "${RED}[-] Failed to update system${RESET}"; exit 1; }
 
@@ -64,7 +64,12 @@ if [ -d "dirsearch" ]; then
 else
     echo -e "${GREEN}[+] Installing Dirsearch...${RESET}"
     git clone https://github.com/maurosoria/dirsearch.git || { echo -e "${RED}[-] Failed to clone Dirsearch${RESET}"; exit 1; }
+    cd dirsearch || { echo -e "${RED}[-] Failed to access dirsearch directory${RESET}"; exit 1; }
+    echo -e "${GREEN}[+] Installing Dirsearch requirements...${RESET}"
+    pip3 install -r requirements.txt || { echo -e "${RED}[-] Failed to install Dirsearch requirements${RESET}"; exit 1; }
+    cd ..
     sudo ln -s "$(pwd)/dirsearch/dirsearch.py" /usr/local/bin/dirsearch
+    chmod +x "$(pwd)/dirsearch/dirsearch.py"
 fi
 
 # Install Httprobe 
