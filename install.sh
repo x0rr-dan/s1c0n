@@ -5,7 +5,7 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 RESET="\033[0m"
 
-echo -e "${GREEN}=== Installer for Kali Linux 2024 Tools ===${RESET}"
+echo -e "${GREEN}=== Installer for S1C0N ===${RESET}"
 
 # Update dan upgrade sistem
 echo -e "${GREEN}[+] Updating and upgrading system...${RESET}"
