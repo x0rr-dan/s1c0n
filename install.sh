@@ -82,7 +82,37 @@ else
     go install github.com/tomnomnom/httprobe@latest
     sudo cp ~/go/bin/httprobe /usr/local/bin/ || { echo -e "${RED}[-] Failed to copy httprobe${RESET}"; exit 1; }
 fi
+# Install PyQt5
+if python3 -c "import PyQt5" &> /dev/null; then
+    echo -e "${GREEN}[✓] PyQt5 is already installed${RESET}"
+else
+    echo -e "${GREEN}[+] Installing PyQt5...${RESET}"
+    pip3 install PyQt5 || { echo -e "${RED}[-] Failed to install PyQt5${RESET}"; exit 1; }
+fi
 
+# Install requests
+if python3 -c "import requests" &> /dev/null; then
+    echo -e "${GREEN}[✓] requests is already installed${RESET}"
+else
+    echo -e "${GREEN}[+] Installing requests...${RESET}"
+    pip3 install requests || { echo -e "${RED}[-] Failed to install requests${RESET}"; exit 1; }
+fi
+
+# Install python-nmap
+if python3 -c "import nmap" &> /dev/null; then
+    echo -e "${GREEN}[✓] python-nmap is already installed${RESET}"
+else
+    echo -e "${GREEN}[+] Installing python-nmap...${RESET}"
+    pip3 install python-nmap || { echo -e "${RED}[-] Failed to install python-nmap${RESET}"; exit 1; }
+fi
+
+# Install builtwith
+if python3 -c "import builtwith" &> /dev/null; then
+    echo -e "${GREEN}[✓] builtwith is already installed${RESET}"
+else
+    echo -e "${GREEN}[+] Installing builtwith...${RESET}"
+    pip3 install builtwith || { echo -e "${RED}[-] Failed to install builtwith${RESET}"; exit 1; }
+fi
 # Selesai
 echo -e "${GREEN}[+] Installation completed successfully!${RESET}"
 echo -e "${GREEN}Tools Installed:${RESET}"
