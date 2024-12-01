@@ -70,6 +70,9 @@ python3 sicon.py -u <target>
 
 
 ## next features
+- [x] GUI
+- [ ] make installer that auto install all requirement for gui & cli tools
+- [ ] installer support kali, parrot, arch
 - [ ] wordpress user enumeration
 - [ ] report scan in html output
 - [ ] option to use proxy
