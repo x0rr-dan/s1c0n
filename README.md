@@ -70,11 +70,20 @@ python3 sicon.py -u <target>
 
 
 ## next features
-- [x] GUI
-- [ ] make installer that auto install all requirement for gui & cli tools
-- [ ] installer support kali, parrot, arch
+# general
+- [ ] make installer for all distro, so every distro can run
+# GUI
+- [x] subdomain scanner
+- [x] direcrory scanner
+- [x] wafscan
+- [x] portscan
+- [x] save output scan
+- [ ] cms scanner
+# CLI
 - [ ] wordpress user enumeration
-- [ ] report scan in html output
+- [ ] report scan in html or json output
 - [ ] option to use proxy
 - [ ] user agent customization
 - [ ] custom scan option (maybe with argparse or just simple input)
+# need improvemenr
+- [ ] detection wordpress (its suck)
