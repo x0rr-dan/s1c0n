@@ -11,7 +11,10 @@ from PyQt5.QtWidgets import (
     QTableWidget,
     QTableWidgetItem,
     QTextEdit,
+    QWidget,
 )
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtGui import QPixmap, QIcon
 import threading
 import logging
 from animation.horizontal_scan_widget import HorizontalScanWidget
@@ -34,7 +37,7 @@ class ScannerApp(QMainWindow):
         self.setWindowTitle("S1C0N: Advanced Recon & Enumeration Tools")
         self.setGeometry(100, 100, 1000, 700)
         self.setStyleSheet("background-color: #121212; color: #EDEDED;")
-
+        self.setWindowIcon(QIcon("elang.png"))
         self.central_widget = QtWidgets.QWidget()
         self.setCentralWidget(self.central_widget)
 
@@ -64,6 +67,8 @@ class ScannerApp(QMainWindow):
             "📂 Directory Scanning": {"function": None, "tab": None, "columns": ["Status", "Directory"]},
         }
 
+        self.add_home_tab()
+        self.create_feature_description_tab()
         # Create a Tab for Each Feature
         for feature_name in self.tabs:
             self.create_feature_tab(feature_name)
@@ -80,7 +85,98 @@ class ScannerApp(QMainWindow):
         self.directory_scanner = DirectoryScanner()
         self.directory_scanner.update_signal.connect(self.update_table_directory)
         self.directory_scanner.error_signal.connect(self.show_error_message)
+        
+    def add_home_tab(self):
+        """ Add Home Tab """
+        home_tab = QWidget()
+        home_layout = QVBoxLayout(home_tab)
+        home_layout.addStretch(1)        
 
+        # Logo
+        logo = QLabel()
+        pixmap = QPixmap("sicon.png")  
+        logo.setPixmap(pixmap.scaled(700, 700, Qt.KeepAspectRatio)) 
+        logo.setAlignment(Qt.AlignCenter)
+        home_layout.addWidget(logo)
+
+        # Subjudul
+        subjudul = QLabel("Reconnaissance & Enumerations Tool")
+        subjudul.setAlignment(Qt.AlignCenter)
+        subjudul.setStyleSheet("font-size: 32px; color: #25D366; font-weight: bold; margin-top: 10px;")
+        home_layout.addWidget(subjudul)
+        home_layout.addStretch(1)
+        # Disclaimer
+        disclaimer_text = """
+        <p style="font-size: 14px; font-style: italic; color: green;">
+        Disclaimer : This Application is intended for educational and demonstration purposes only.Using<br> this tool for 
+	scanning or enumeration without explicit permission from the system or network owner<br> may violate 
+	applicable laws. The user is fully responsible for any actions taken using this application.
+        </p>
+        """
+        disclaimer = QLabel(disclaimer_text, home_tab)
+        disclaimer.setAlignment(Qt.AlignCenter)
+        home_layout.addWidget(disclaimer)
+        home_layout.addStretch(1)
+       
+        self.tab_widget.addTab(home_tab, "🏠 Beranda")
+
+    def create_feature_description_tab(self):
+        """ Create a tab with explanations for each feature. """
+        description_tab = QWidget()
+        layout = QVBoxLayout(description_tab)
+        
+        # Title Label
+        title_label = QLabel("Feature Explanations - S1C0N Tools")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("font-size: 24px; color: #25D366; font-weight: bold; margin-top:30px; margin-bottom: 30px")
+        layout.addWidget(title_label)
+        
+        # WAF Scanning Explanation
+        waf_description = QLabel("""
+            <h3>🔐 WAF Scanning</h3>
+            WAF Scanning is used to detect the presence of a Web Application Firewall on the target site. 
+            This tool helps to determine if the web application is protected by a WAF that may block attacks.
+            The scan will look for active WAF names and provide further details about the protection in place.
+        """)
+        waf_description.setWordWrap(True)
+        waf_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
+        layout.addWidget(waf_description)
+
+        # Port Scanning Explanation
+        port_description = QLabel("""
+            <h3>🌐 Port Scanning</h3>
+            Port Scanning is used to scan for open ports on the server or web application. 
+            Open ports can provide important information about the services running on the server.
+            This scan identifies open ports, their status, and the services running on those ports.
+        """)
+        port_description.setWordWrap(True)
+        port_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
+        layout.addWidget(port_description)
+
+        # Subdomain Scanning Explanation
+        subdomain_description = QLabel("""
+            <h3>🌍 Subdomain Scanning</h3>
+            Subdomain Scanning is used to discover subdomains associated with the main domain. 
+            Subdomains can reveal various services and additional areas within the domain that may serve as entry points for attacks.
+            This scan looks for subdomains linked to the target domain and identifies open ports associated with each subdomain.
+        """)
+        subdomain_description.setWordWrap(True)
+        subdomain_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
+        layout.addWidget(subdomain_description)
+
+        # Directory Scanning Explanation
+        directory_description = QLabel("""
+            <h3>📂 Directory Scanning</h3>
+            Directory Scanning is used to scan for directories and files available on a web application. 
+            Many websites have exposed files and directories that can be exploited by attackers.
+            This scan helps identify accessible directories and look for potential data leaks.
+        """)
+        directory_description.setWordWrap(True)
+        directory_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
+        layout.addWidget(directory_description)
+        layout.addStretch(1)
+        
+        self.tab_widget.addTab(description_tab, "ℹ️ Description")
     def add_url_input(self):
         """Add URL input field and button."""
         url_layout = QHBoxLayout()
