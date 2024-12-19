@@ -83,7 +83,7 @@ python3 sicon.py -u <target>
 - [ ] wordpress user enumeration
 - [ ] report scan in html or json output
 - [ ] option to use proxy
-- [ ] user agent customization
+- [x] user agent customization (random)
 - [ ] custom scan option (maybe with argparse or just simple input)
 # need improvemenr
 - [ ] detection wordpress (its suck)
