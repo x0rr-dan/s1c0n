@@ -615,7 +615,7 @@ class ScannerApp(QMainWindow):
                     self.tabs[feature_name]["tab"]["status_label"],
                     self.tabs[feature_name]["tab"]["result_table"],
                 )
-            elif feature_name == "🔍 CMS Detection":
+            elif feature_name == "🔍 CMS Scanning":
                 self.start_cms_scan(
                     self.tabs[feature_name]["tab"]["status_label"],
                     self.tabs[feature_name]["tab"]["result_table"],
