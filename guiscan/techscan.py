@@ -91,7 +91,7 @@ class TechnologyScanner(QObject):
                 except requests.RequestException as e:
                     self.update_signal.emit({
                         "URL": url,
-                        "Technologies": f"Failed to retrieve data ({str(e)})",
+                        "Technologies": f"Failed to retrieve data",
                         "Status": "Error"
                     })
                     
