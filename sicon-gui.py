@@ -22,7 +22,8 @@ from guiscan.wafscan import waf_scanning
 from guiscan.portscan import port_scanning
 from guiscan.subscan import SubdomainScanner
 from guiscan.scandir import DirectoryScanner
-
+from guiscan.techscan import TechnologyScanner
+from guiscan.cmsscan import CMSScanner
 # Configure logging
 logging.basicConfig(
     filename="application.log",
@@ -65,6 +66,8 @@ class ScannerApp(QMainWindow):
             "🌐 Port Scanning": {"function": port_scanning, "tab": None, "columns": ["Port", "Service", "State"]},
             "🌍 Subdomain Scanning": {"function": None, "tab": None, "columns": ["Subdomain", "Type Panel", "Ports"]},
             "📂 Directory Scanning": {"function": None, "tab": None, "columns": ["Status", "Directory"]},
+            "🔧 Technology Scanning": {"function": None, "tab": None,"columns": ["URL", "Technologies", "Status"]},
+            "🔍 CMS Scanning": {"function": None, "tab": None,"columns": ["URL", "CMS", "Status"]},
         }
 
         self.add_home_tab()
@@ -86,6 +89,16 @@ class ScannerApp(QMainWindow):
         self.directory_scanner.update_signal.connect(self.update_table_directory)
         self.directory_scanner.error_signal.connect(self.show_error_message)
         
+        # Technology Scanner setups
+        self.tech_scanner = TechnologyScanner()
+        self.tech_scanner.update_signal.connect(self.update_table_tech)
+        self.tech_scanner.error_signal.connect(self.show_error_message)
+        
+        # CMS Scanner setups
+        self.cms_scanner = CMSScanner()
+        self.cms_scanner.update_signal.connect(self.update_table_cms)
+        self.cms_scanner.error_signal.connect(self.show_error_message)
+
     def add_home_tab(self):
         """ Add Home Tab """
         home_tab = QWidget()
@@ -273,6 +286,14 @@ class ScannerApp(QMainWindow):
             start_button.clicked.connect(
                 lambda: self.start_directory_scan(status_label, result_table)
             )
+        elif feature_name == "🔧 Technology Scanning":
+            start_button.clicked.connect(
+                lambda: self.start_tech_scan(status_label, result_table)
+            )
+        elif feature_name == "🔍 CMS Scanning":
+            start_button.clicked.connect(
+                lambda: self.start_cms_scan(status_label, result_table)
+            )
         else:
             start_button.clicked.connect(
                 lambda: self.start_scan(feature_name, status_label, result_table)
@@ -417,6 +438,76 @@ class ScannerApp(QMainWindow):
             daemon=True,
         ).start()
 
+    def start_tech_scan(self, status_label, result_table):
+        """Mulai scan technology."""
+        url = self.url_entry.text().strip()
+        if not url:
+            QMessageBox.critical(self, "Error", "Please enter a valid URL.")
+            self.add_log_entry("Error: No URL entered for Technology Scanning.")
+            return
+
+        # Ambil widget animasi dari tab
+        scan_widget = self.tabs["🔧 Technology Scanning"]["tab"]["scan_widget"]   
+        # Mulai animasi scanning
+        scan_widget.start_animation()
+
+        status_label.setText("Status: Scanning Technology...")
+        self.add_log_entry(f"Started scanning 🔧 Technology Scanning for URL: {url}")
+
+        def run_tech_scan():
+            try:
+                # Jalankan scanning teknologi
+                self.tech_scanner.tech_scanning(url)
+                status_label.setText("Status: Completed Technology Scanning")
+                self.add_log_entry(f"Completed scanning 🔧 Technology Scanning for URL: {url}")
+            except Exception as e:
+                status_label.setText(f"Error: {e}")
+                self.add_log_entry(f"Error during Technology Scanning for URL {url}: {e}")
+            finally:
+                # Hentikan animasi scanning
+                scan_wdidget.stop_animation(completed=True)
+
+        threading.Thread(
+            target=self.tech_scanner.tech_scanning,
+            args=(url,),
+            daemon=True,
+        ).start()
+    
+    def start_cms_scan(self, status_label, result_table):
+        """Mulai scan cms."""
+        url = self.url_entry.text().strip()
+        if not url:
+            QMessageBox.critical(self, "Error", "Please enter a valid URL.")
+            self.add_log_entry("Error: No URL entered for CMS Scanning.")
+            return
+
+        # Ambil widget animasi dari tab
+        scan_widget = self.tabs["🔍 CMS Scanning"]["tab"]["scan_widget"]   
+        # Mulai animasi scanning
+        scan_widget.start_animation()
+
+        status_label.setText("Status: Scanning CMS...")
+        self.add_log_entry(f"Started scanning 🔍 CMS Scanning for URL: {url}")
+
+        def run_cms_scan():
+            try:
+                # Jalankan scanning cms
+                self.cms_scanner.cms_scanning(url)
+                status_label.setText("Status: Completed CMS Scanning")
+                self.add_log_entry(f"Completed scanning 🔍 CMS Scanning for URL: {url}")
+            except Exception as e:
+                status_label.setText(f"Error: {e}")
+                self.add_log_entry(f"Error during CMS Scanning for URL {url}: {e}")
+            finally:
+                # Hentikan animasi scanning
+                scan_wdidget.stop_animation(completed=True)
+
+        threading.Thread(
+            target=self.cms_scanner.cms_scanning,
+            args=(url,),
+            daemon=True,
+        ).start()
+
 
     def update_table(self, feature_name, result):
         """Update the table with the results."""
@@ -468,6 +559,43 @@ class ScannerApp(QMainWindow):
             if item:
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
 
+    def update_table_tech(self, data):
+        """Update the technology scanning table."""
+        tab = self.tabs["🔧 Technology Scanning"]["tab"]
+        table = tab["result_table"]
+
+        row_position = table.rowCount()
+        table.insertRow(row_position)
+
+        # Add URL, Technologies, and Status columns
+        table.setItem(row_position, 0, QTableWidgetItem(data["URL"]))
+        table.setItem(row_position, 1, QTableWidgetItem(data["Technologies"]))
+        table.setItem(row_position, 2, QTableWidgetItem(data["Status"]))
+
+        # Center-align all data
+        for col in range(3):
+            item = table.item(row_position, col)
+            if item:
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+
+    def update_table_cms(self, data):
+        """Update the CMS detection table."""
+        tab = self.tabs["🔍 CMS Scanning"]["tab"]
+        table = tab["result_table"]
+
+        row_position = table.rowCount()
+        table.insertRow(row_position)
+
+        # Add URL, CMS, and Status columns
+        table.setItem(row_position, 0, QTableWidgetItem(data["URL"]))
+        table.setItem(row_position, 1, QTableWidgetItem(data["CMS"]))
+        table.setItem(row_position, 2, QTableWidgetItem(data["Status"]))
+
+        # Center-align all data
+        for col in range(3):
+            item = table.item(row_position, col)
+            if item:
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
 
     def scan_all(self):
         """Start scanning all features sequentially."""
@@ -481,7 +609,17 @@ class ScannerApp(QMainWindow):
                 self.start_directory_scan(
                     self.tabs[feature_name]["tab"]["status_label"],
                     self.tabs[feature_name]["tab"]["result_table"],
-                )    
+                )
+            elif feature_name == "🔧 Technology Scanning":
+                self.start_tech_scan(
+                    self.tabs[feature_name]["tab"]["status_label"],
+                    self.tabs[feature_name]["tab"]["result_table"],
+                )
+            elif feature_name == "🔍 CMS Detection":
+                self.start_cms_scan(
+                    self.tabs[feature_name]["tab"]["status_label"],
+                    self.tabs[feature_name]["tab"]["result_table"],
+            )    
             else:
                 self.start_scan(
                     feature_name,
