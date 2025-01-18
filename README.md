@@ -78,7 +78,7 @@ python3 sicon.py -u <target>
 - [x] wafscan
 - [x] portscan
 - [x] save output scan
-- [ ] cms scanner
+- [x] cms scanner
 # CLI
 - [ ] wordpress user enumeration
 - [ ] report scan in html or json output
