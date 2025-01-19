@@ -1,12 +1,18 @@
 from core.color import Color
+from core.random_ag import rangent
 from scan.wp.cek_vuln import cek_vuln
 import requests
 import re
 
-def cek_db(target_site, plugin, versi):
+def cek_db(target_site, plugin, versi, user_agent=None):
+    he = rangent()
+    if user_agent:
+        headers = {"User-Agent": user_agent}
+    else:
+        headers = {"User-Agent": he}
     try:
         url = f"https://wordpress.org/plugins/{plugin}/"
-        rq = requests.get(url, timeout=10)
+        rq = requests.get(url, timeout=10, headers=headers)
         version_match = re.search(r"Version\s*<strong>([\d.]+)</strong>", str(rq.text))
         ver = version_match.group(1) if version_match else f"cant find last version of plugin {plugin}"
         if versi < ver:
