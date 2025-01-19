@@ -5,22 +5,34 @@
 ![Terkey](https://github-readme-stats.vercel.app/api/pin?username=x0rr-dan&repo=s1c0n&title_color=fff&icon_color=fff&text_color=ffffff&bg_color=000000)
 
 ```
+    	             ┏━┓╺┓ ┏━╸┏━┓┏┓╻
+    	             ┗━┓ ┃ ┃  ┃┃┃┃┗┫
+    	             ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.8
 
+	      https://github.com/x0rr-dan/s1c0n
+	          Dinus Open Source Community
+usage: 
+sicon -u site.com -o waf subdo     only do waf scanning and subdomain scanning
+sicon -u site.com -o scan_dir      only do waf scanning and subdomain scanning
+sicon -u site.com -o port subdo    only do port scanning and subdomain scanning
+sicon -u site.com                  scan with all options
 
-	         ┏━┓╺┓ ┏━╸┏━┓┏┓╻
-	         ┗━┓ ┃ ┃  ┃┃┃┃┗┫
-	         ┗━┛╺┻╸┗━╸┗━┛╹ ╹ v1.8
-                
-                    Simple Recon
-		    Coded by x0r
-	https://github.com/x0rr-dan/s1c0n
+example usage:
+sicon -u site.com --proxy='socks5://127.0.0.1:1080' --user-agent='Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X)'      scan with all option and using proxy and custom user-agent
 
-	  [?] Usage example: sicon -u target.com
-
+options:
+  -h, --help            show this help message and exit
+  -o, --option {waf,port,subdo,scan_dir} [{waf,port,subdo,scan_dir} ...]
+                        Choose one scan option, eg:
+  -u, --url URL         url target
+  -a, --user-agent USER_AGENT
+                        custom user-agent in scan dir, cms detection, technology detection
+  -t, --tor             scanning with tor network to hide ur ass
+  -p, --proxy PROXY     set a custom proxy, e.g., http://proxyserver:port or socks5://proxyserver:port
 ```
 
 ## last update:
-so far no errors, testing on arch linux 2024.07.01
+so far no errors, testing on arch linux 6.12.9-arch1-1
 
 ## About:
 simple recon tool to help you searching vulnerability on web server. maybe xD
@@ -64,9 +76,10 @@ python3 sicon.py -u <target>
 ```
 
 ## screenshoot
-![241114_22h10m05s_screenshot](https://github.com/user-attachments/assets/9ea9ed46-c513-4313-911f-be44d1a78881)
-![241114_22h10m15s_screenshot](https://github.com/user-attachments/assets/b8897318-9fea-4d59-bd3f-52d9fb3158d8)
-![241114_22h10m25s_screenshot](https://github.com/user-attachments/assets/b308f15f-c6e9-4597-b083-f43eba3c9e7c)
+![image](https://github.com/user-attachments/assets/6fac3792-c545-43a0-b9e6-bec3764ccdb3)
+
+![250119_14h23m02s_screenshot](https://github.com/user-attachments/assets/68dee4a0-c975-40e9-be92-df427d0a830a)
+
 
 
 ## next features
@@ -82,8 +95,8 @@ python3 sicon.py -u <target>
 # CLI
 - [ ] wordpress user enumeration
 - [ ] report scan in html or json output
-- [ ] option to use proxy
-- [x] user agent customization (random)
-- [ ] custom scan option (maybe with argparse or just simple input)
+- [x] option to use proxy
+- [x] user agent customization (random & user can choose)
+- [x] custom scan option
 # need improvemenr
 - [ ] detection wordpress (its suck)
