@@ -1,11 +1,19 @@
 from core.color import Color
+from core.random_ag import rangent
 from os import getcwd, system, path
 from core.utility import clean
 import json
 
-def scan_dir(target):
+def scan_dir(target, user_agent=None, proxy=None):
+    if user_agent:
+        ug = user_agent
+    else:
+        ug = rangent()
     p = f"{getcwd()}/"
-    system(f"dirsearch -u {target} -o {p}.list_dir.json --format=json > /dev/null")
+    if proxy:
+        system(f"dirsearch -u {target} --user-agent='{ug}' --proxy='{proxy}' -o {p}.list_dir.json --format=json > /dev/null")
+    else:
+        system(f"dirsearch -u {target} --user-agent='{ug}' -o {p}.list_dir.json --format=json > /dev/null")
     if path.exists(f"{p}/.list_dir.json"):
         with open(".list_dir.json", encoding="utf-8") as dir:
             jdir = json.load(dir)
