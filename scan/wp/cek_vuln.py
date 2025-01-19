@@ -1,11 +1,16 @@
 from core.color import Color
+from core.random_ag import rangent
 import requests
 import re
 
-def cek_vuln(plugin, versi):
+def cek_vuln(plugin, versi, user_agent=None):
+    if user_agent:
+        headers = {"User-Agent": user_agent}
+    else:
+        headers = {"User-Agent": rangent()}
     try:
         wpscan = f"https://wpscan.com/plugin/{plugin}"
-        rscan = requests.get(wpscan, timeout=10).text
+        rscan = requests.get(wpscan, timeout=10, headers=headers).text
         
         version_pattern = r"Fixed in\s+(\d+\.\d+\.\d+)"
         title_pattern = r'Title\s*</div>\s*<a href="[^"]+">\s*([^<]+)'
