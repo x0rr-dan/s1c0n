@@ -12,7 +12,7 @@ from scan.techscan import more_info
 from scan.wp.wp_enum import wp_enum
 
 def main():
-    parser = argparse.ArgumentParser(description=break_and_help(), usage="""\nsicon -u site.com -o waf subdo     only do waf scanning and subdomain scanning\nsicon -u site.com -o scan_dir      only do waf scanning and subdomain scanning\nsicon -u site.com -o port subdo    only do port scanning and subdomain scanning\nsicon -u site.com                  scan with all options """)
+    parser = argparse.ArgumentParser(description=break_and_help(), usage="""\nsicon -u site.com -o waf subdo     only do waf scanning and subdomain scanning\nsicon -u site.com -o scan_dir      only do waf scanning and subdomain scanning\nsicon -u site.com -o port subdo    only do port scanning and subdomain scanning\nsicon -u site.com                  scan with all options\n\nexample usage:\nsicon -u site.com --proxy='socks5://127.0.0.1:1080' --user-agent='Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X)'      scan with all option and using proxy and custom user-agent""")
     parser.add_argument("-o", "--option", nargs="+", choices=["waf", "port", "subdo", "scan_dir"], default=["all"], help="Choose one scan option, eg: ")
     parser.add_argument("-u", "--url", required=True, help="url target")
     parser.add_argument("-a", "--user-agent", help="custom user-agent in scan dir, cms detection, technology detection")
