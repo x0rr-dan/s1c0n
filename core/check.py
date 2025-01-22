@@ -51,7 +51,7 @@ def check(tool):
                   else:
                     pass
              else:
-                  print(f"{Color.r}{Color.bold}[!] {tool} is missing, Please run me with sudo to install {tool}{Color.reset}")
+                  print(f"{Color.red}{Color.bold}[!] {tool} is missing, Please run me with sudo to install {tool}{Color.reset}")
                   exit()
         else:
              print("[!] ur not using linux ...")
