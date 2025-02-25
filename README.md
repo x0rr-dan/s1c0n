@@ -65,6 +65,11 @@ dirsearch
 httprobe
 ```
 
+## one line installer
+```
+curl  -L https://raw.githubusercontent.com/x0rr-dan/s1c0n/refs/heads/main/installer.py | python3
+```
+
 ## How to install:
 ```
 pip3 install -r requirements.txt
