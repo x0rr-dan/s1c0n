@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=s1c0n gui
+Comment=Automatic recon tool to help you searching vulnerability on web server
+Encoding=UTF-8
+Exec=/usr/bin/python3 /opt/s1c0n/sicon-gui.py
+Icon=/opt/s1c0n/elang.png
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=03-webapp-analysis;;
