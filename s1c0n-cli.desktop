@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=s1c0n cli
+Comment=Automatic recon tool to help you searching vulnerability on web server
+Encoding=UTF-8
+Exec=exec-in-shell "sicon"
+Icon=/opt/s1c0n/elang.png
+StartupNotify=false
+Terminal=true
+Type=Application
+Categories=03-webapp-analysis;;
