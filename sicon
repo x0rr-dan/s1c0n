@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 /opt/s1c0n/sicon.py "$@"
