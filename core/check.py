@@ -7,7 +7,7 @@ import sys
 
 # 1.2 checking tools 
 def check(tool):
-    if path.exists(f"/usr/bin/{tool}"):
+    if path.exists(f"/usr/bin/{tool}") or path.exists(f"/usr/local/bin/{tool}"):
         print(f"{Color.green}{Color.bold}[*] {tool} exist{Color.reset}")
         time.sleep(0.2)
     else:
