@@ -62,7 +62,6 @@ sublist3r
 subfinder
 assetfinder
 dirsearch
-httprobe
 ```
 
 ## one line installer
