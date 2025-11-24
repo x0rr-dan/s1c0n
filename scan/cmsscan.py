@@ -1,5 +1,6 @@
 from core.color import Color
 from core.random_ag import rangent
+from scan.bhttprobe import better_httprobe
 from os import path
 import requests, re, subprocess
 
@@ -26,9 +27,8 @@ def cms_detection(target, user_agent=None, proxy=None):
         else:
             headers = {"User-Agent": rangent()}
 
-        host = subprocess.check_output(f"echo {url} | httprobe -prefer-https", shell=True, text=True).strip()
-        if not host:
-            host = f"http://{url}"
+        # host = subprocess.check_output(f"echo {url} | httprobe -prefer-https", shell=True, text=True).strip()
+        host = better_httprobe(url)
         try:
             response = requests.get(f'{host}', headers=headers, timeout=60, proxies=proxies)
             if response.status_code == 200:
@@ -58,4 +58,5 @@ def cms_detection(target, user_agent=None, proxy=None):
         except requests.exceptions.RequestException as e:
             print(
                 f"{Color.green}\t    -> {Color.reset}{Color.bold}{host} | {Color.red}COULD NOT BE REACHED {e}{Color.reset}")
+
 
