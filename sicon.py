@@ -24,7 +24,7 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch','httprobe']
+    list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch']
     for tool in list_tool:
         check(tool)
     logo()
