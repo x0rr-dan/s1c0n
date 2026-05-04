@@ -1,4 +1,4 @@
-## s1c0n - simplefy your recon progress
+## s1c0n - simplify your recon progress
 ![Linux](https://img.shields.io/badge/Linux-blue)
 ![Arch Linux](https://img.shields.io/badge/Arch%20Linux-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
