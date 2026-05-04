@@ -1,11 +1,12 @@
+from scan.bhttprobe import better_httprobe
 import subprocess
 import re
 
 def waf_scanning(target):
     """Scan the target for Web Application Firewall (WAF) and return results in a structured format."""
     try:
-        # Resolve the target using httprobe
-        host = subprocess.check_output(f"echo {target} | httprobe -prefer-https", shell=True, text=True).strip()
+        # Resolve the target using better_httprobe
+        host = better_httprobe(target)
 
         # Run wafw00f against the target
         waf_output = subprocess.check_output(f"wafw00f {host}", shell=True, text=True)

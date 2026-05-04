@@ -1,14 +1,13 @@
 from core.color import Color
 from core.utility import create_report_folder
+from scan.bhttprobe import better_httprobe
 import subprocess
 import re
 
 def waf_scanning(target):
     create_report_folder(target)
     try:
-        host = subprocess.check_output(f"echo {target} | httprobe -prefer-https", shell=True, text=True)
-        if not host:
-            host = target
+        host = better_httprobe(target)
         waf_output = subprocess.check_output(f"wafw00f {host}", shell=True, text=True)
         # print(waf_output)  # Uncomment for debugging if needed
         if "is behind" in waf_output:

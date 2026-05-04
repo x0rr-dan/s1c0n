@@ -24,6 +24,7 @@ from guiscan.subscan import SubdomainScanner
 from guiscan.scandir import DirectoryScanner
 from guiscan.techscan import TechnologyScanner
 from guiscan.cmsscan import CMSScanner
+from guiscan.wp_user_enum import WPUserEnumScanner
 # Configure logging
 logging.basicConfig(
     filename="application.log",
@@ -68,6 +69,7 @@ class ScannerApp(QMainWindow):
             "📂 Directory Scanning": {"function": None, "tab": None, "columns": ["Status", "Directory"]},
             "🔧 Technology Scanning": {"function": None, "tab": None,"columns": ["URL", "Technologies", "Status"]},
             "🔍 CMS Scanning": {"function": None, "tab": None,"columns": ["URL", "CMS", "Status"]},
+            "👥 WP User Enumeration": {"function": None, "tab": None,"columns": ["URL", "Username", "Method", "Status"]},
         }
 
         self.add_home_tab()
@@ -98,6 +100,11 @@ class ScannerApp(QMainWindow):
         self.cms_scanner = CMSScanner()
         self.cms_scanner.update_signal.connect(self.update_table_cms)
         self.cms_scanner.error_signal.connect(self.show_error_message)
+
+        # WP User Enum setups
+        self.wp_user_scanner = WPUserEnumScanner()
+        self.wp_user_scanner.update_signal.connect(self.update_table_wp_user)
+        self.wp_user_scanner.error_signal.connect(self.show_error_message)
 
     def add_home_tab(self):
         """ Add Home Tab """
@@ -187,6 +194,17 @@ class ScannerApp(QMainWindow):
         directory_description.setWordWrap(True)
         directory_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
         layout.addWidget(directory_description)
+
+        # WP User Enum Explanation
+        wp_user_description = QLabel("""
+            <h3>👥 WP User Enumeration</h3>
+            WP User Enumeration is used to identify valid usernames on a WordPress site. 
+            It uses REST API checks, author archive ID cycling, page source scraping, and differential login error messages.
+        """)
+        wp_user_description.setWordWrap(True)
+        wp_user_description.setStyleSheet("font-size: 14px; color: #EDEDED;")
+        layout.addWidget(wp_user_description)
+        
         layout.addStretch(1)
         
         self.tab_widget.addTab(description_tab, "ℹ️ Description")
@@ -294,6 +312,10 @@ class ScannerApp(QMainWindow):
             start_button.clicked.connect(
                 lambda: self.start_cms_scan(status_label, result_table)
             )
+        elif feature_name == "👥 WP User Enumeration":
+            start_button.clicked.connect(
+                lambda: self.start_wp_user_scan(status_label, result_table)
+            )
         else:
             start_button.clicked.connect(
                 lambda: self.start_scan(feature_name, status_label, result_table)
@@ -360,10 +382,16 @@ class ScannerApp(QMainWindow):
         try:
             result = scan_function(url)
             self.update_table(feature_name, result)
-            status_label.setText(f"Status: Completed {feature_name}")
+            QtCore.QMetaObject.invokeMethod(
+                status_label, "setText", QtCore.Qt.QueuedConnection,
+                QtCore.Q_ARG(str, f"Status: Completed {feature_name}")
+            )
             self.add_log_entry(f"Completed scanning {feature_name} for URL: {url}")
         except Exception as e:
-            status_label.setText(f"Error: {e}")
+            QtCore.QMetaObject.invokeMethod(
+                status_label, "setText", QtCore.Qt.QueuedConnection,
+                QtCore.Q_ARG(str, f"Error: {e}")
+            )
             self.add_log_entry(f"Error scanning {feature_name} for URL {url}: {e}")
         finally:
             scan_widget.stop_animation(completed=True)
@@ -388,18 +416,23 @@ class ScannerApp(QMainWindow):
             try:
                 # Jalankan scanning subdomain
                 self.subdomain_scanner.subdo_scanning(url)
-                status_label.setText("Status: Completed Subdomain Scanning")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed Subdomain Scanning")
+                )
                 self.add_log_entry(f"Completed scanning 🌍 Subdomain Scanning for URL: {url}")
             except Exception as e:
-                status_label.setText(f"Error: {e}")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
                 self.add_log_entry(f"Error during Subdomain Scanning for URL {url}: {e}")
             finally:
                 # Hentikan animasi scanning
                 scan_widget.stop_animation(completed=True)             
 
         threading.Thread(
-            target=self.subdomain_scanner.subdo_scanning,
-            args=(url,),
+            target=run_subdomain_scan,
             daemon=True,
         ).start()
 
@@ -423,18 +456,23 @@ class ScannerApp(QMainWindow):
             try:
                 # Jalankan scanning direktori
                 self.directory_scanner.scan_dir(url)
-                status_label.setText("Status: Completed Directory Scanning")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed Directory Scanning")
+                )
                 self.add_log_entry(f"Completed scanning 📂 Directory Scanning for URL: {url}")
             except Exception as e:
-                status_label.setText(f"Error: {e}")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
                 self.add_log_entry(f"Error during Directory Scanning for URL {url}: {e}")
             finally:
                 # Hentikan animasi scanning
-                scan_wdidget.stop_animation(completed=True)
+                scan_widget.stop_animation(completed=True)
 
         threading.Thread(
-            target=self.directory_scanner.scan_dir,
-            args=(url,),
+            target=run_directory_scan,
             daemon=True,
         ).start()
 
@@ -458,18 +496,23 @@ class ScannerApp(QMainWindow):
             try:
                 # Jalankan scanning teknologi
                 self.tech_scanner.tech_scanning(url)
-                status_label.setText("Status: Completed Technology Scanning")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed Technology Scanning")
+                )
                 self.add_log_entry(f"Completed scanning 🔧 Technology Scanning for URL: {url}")
             except Exception as e:
-                status_label.setText(f"Error: {e}")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
                 self.add_log_entry(f"Error during Technology Scanning for URL {url}: {e}")
             finally:
                 # Hentikan animasi scanning
-                scan_wdidget.stop_animation(completed=True)
+                scan_widget.stop_animation(completed=True)
 
         threading.Thread(
-            target=self.tech_scanner.tech_scanning,
-            args=(url,),
+            target=run_tech_scan,
             daemon=True,
         ).start()
     
@@ -493,18 +536,59 @@ class ScannerApp(QMainWindow):
             try:
                 # Jalankan scanning cms
                 self.cms_scanner.cms_scanning(url)
-                status_label.setText("Status: Completed CMS Scanning")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed CMS Scanning")
+                )
                 self.add_log_entry(f"Completed scanning 🔍 CMS Scanning for URL: {url}")
             except Exception as e:
-                status_label.setText(f"Error: {e}")
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
                 self.add_log_entry(f"Error during CMS Scanning for URL {url}: {e}")
             finally:
                 # Hentikan animasi scanning
-                scan_wdidget.stop_animation(completed=True)
+                scan_widget.stop_animation(completed=True)
 
         threading.Thread(
-            target=self.cms_scanner.cms_scanning,
-            args=(url,),
+            target=run_cms_scan,
+            daemon=True,
+        ).start()
+
+    def start_wp_user_scan(self, status_label, result_table):
+        """Mulai scan wp user."""
+        url = self.url_entry.text().strip()
+        if not url:
+            QMessageBox.critical(self, "Error", "Please enter a valid URL.")
+            self.add_log_entry("Error: No URL entered for WP User Enumeration.")
+            return
+
+        scan_widget = self.tabs["👥 WP User Enumeration"]["tab"]["scan_widget"]   
+        scan_widget.start_animation()
+
+        status_label.setText("Status: Scanning WP Users...")
+        self.add_log_entry(f"Started scanning 👥 WP User Enumeration for URL: {url}")
+
+        def run_wp_user_scan():
+            try:
+                self.wp_user_scanner.wp_user_enum_scanning(url)
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed WP User Enumeration")
+                )
+                self.add_log_entry(f"Completed scanning 👥 WP User Enumeration for URL: {url}")
+            except Exception as e:
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
+                self.add_log_entry(f"Error during WP User Enumeration for URL {url}: {e}")
+            finally:
+                scan_widget.stop_animation(completed=True)
+
+        threading.Thread(
+            target=run_wp_user_scan,
             daemon=True,
         ).start()
 
@@ -597,35 +681,154 @@ class ScannerApp(QMainWindow):
             if item:
                 item.setTextAlignment(QtCore.Qt.AlignCenter)
 
+    def update_table_wp_user(self, data):
+        """Update the WP User Enumeration table."""
+        tab = self.tabs["👥 WP User Enumeration"]["tab"]
+        table = tab["result_table"]
+
+        row_position = table.rowCount()
+        table.insertRow(row_position)
+
+        table.setItem(row_position, 0, QTableWidgetItem(data["URL"]))
+        table.setItem(row_position, 1, QTableWidgetItem(data["Username"]))
+        table.setItem(row_position, 2, QTableWidgetItem(data["Method"]))
+        table.setItem(row_position, 3, QTableWidgetItem(data["Status"]))
+
+        for col in range(4):
+            item = table.item(row_position, col)
+            if item:
+                item.setTextAlignment(QtCore.Qt.AlignCenter)
+
     def scan_all(self):
-        """Start scanning all features sequentially."""
-        for feature_name in self.tabs:
-            if feature_name == "🌍 Subdomain Scanning":
-                self.start_subdomain_scan(
-                    self.tabs[feature_name]["tab"]["status_label"],
-                    self.tabs[feature_name]["tab"]["result_table"],
+        """Start scanning all features sequentially in a background thread.
+        
+        Scans run in dependency order:
+        1. WAF + Port scanning (independent, run first)
+        2. Subdomain scanning (needed by tech/cms scans)
+        3. Technology scanning (depends on subdomain results)
+        4. CMS scanning (depends on subdomain results)
+        5. WP User Enumeration (depends on CMS scanning to generate wp.txt)
+        6. Directory scanning (independent, run last)
+        """
+        url = self.url_entry.text().strip()
+        if not url:
+            self.add_log_entry("Error: No URL entered for Scan All.")
+            QMessageBox.critical(self, "Error", "Please enter a valid URL.")
+            return
+
+        def run_all_scans():
+            # Phase 1: Independent scans (WAF, Port)
+            for feature_name in ["🔐 WAF Scanning", "🌐 Port Scanning"]:
+                scan_widget = self.tabs[feature_name]["tab"]["scan_widget"]
+                status_label = self.tabs[feature_name]["tab"]["status_label"]
+                scan_function = self.tabs[feature_name]["function"]
+                scan_widget.start_animation()
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Status: Scanning {feature_name}...")
                 )
-            elif feature_name == "📂 Directory Scanning":
-                self.start_directory_scan(
-                    self.tabs[feature_name]["tab"]["status_label"],
-                    self.tabs[feature_name]["tab"]["result_table"],
+                self.add_log_entry(f"Started scanning {feature_name} for URL: {url}")
+                try:
+                    result = scan_function(url)
+                    self.update_table(feature_name, result)
+                    QtCore.QMetaObject.invokeMethod(
+                        status_label, "setText", QtCore.Qt.QueuedConnection,
+                        QtCore.Q_ARG(str, f"Status: Completed {feature_name}")
+                    )
+                    self.add_log_entry(f"Completed scanning {feature_name} for URL: {url}")
+                except Exception as e:
+                    QtCore.QMetaObject.invokeMethod(
+                        status_label, "setText", QtCore.Qt.QueuedConnection,
+                        QtCore.Q_ARG(str, f"Error: {e}")
+                    )
+                    self.add_log_entry(f"Error scanning {feature_name} for URL {url}: {e}")
+                finally:
+                    scan_widget.stop_animation(completed=True)
+
+            # Phase 2: Subdomain scanning (must complete before tech/cms)
+            subdo_widget = self.tabs["🌍 Subdomain Scanning"]["tab"]["scan_widget"]
+            subdo_label = self.tabs["🌍 Subdomain Scanning"]["tab"]["status_label"]
+            subdo_widget.start_animation()
+            QtCore.QMetaObject.invokeMethod(
+                subdo_label, "setText", QtCore.Qt.QueuedConnection,
+                QtCore.Q_ARG(str, "Status: Scanning Subdomains...")
+            )
+            self.add_log_entry(f"Started scanning 🌍 Subdomain Scanning for URL: {url}")
+            try:
+                self.subdomain_scanner.subdo_scanning(url)
+                QtCore.QMetaObject.invokeMethod(
+                    subdo_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed Subdomain Scanning")
                 )
-            elif feature_name == "🔧 Technology Scanning":
-                self.start_tech_scan(
-                    self.tabs[feature_name]["tab"]["status_label"],
-                    self.tabs[feature_name]["tab"]["result_table"],
+                self.add_log_entry(f"Completed scanning 🌍 Subdomain Scanning for URL: {url}")
+            except Exception as e:
+                QtCore.QMetaObject.invokeMethod(
+                    subdo_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
                 )
-            elif feature_name == "🔍 CMS Scanning":
-                self.start_cms_scan(
-                    self.tabs[feature_name]["tab"]["status_label"],
-                    self.tabs[feature_name]["tab"]["result_table"],
-            )    
-            else:
-                self.start_scan(
-                    feature_name,
-                    self.tabs[feature_name]["tab"]["status_label"],
-                    self.tabs[feature_name]["tab"]["result_table"],
+                self.add_log_entry(f"Error during Subdomain Scanning for URL {url}: {e}")
+            finally:
+                subdo_widget.stop_animation(completed=True)
+
+            # Phase 3: Scans that depend on subdomain results (Tech, CMS)
+            dependent_scans = [
+                ("🔧 Technology Scanning", self.tech_scanner.tech_scanning),
+                ("🔍 CMS Scanning", self.cms_scanner.cms_scanning),
+                ("👥 WP User Enumeration", self.wp_user_scanner.wp_user_enum_scanning),
+            ]
+            for scan_name, scan_method in dependent_scans:
+                scan_widget = self.tabs[scan_name]["tab"]["scan_widget"]
+                status_label = self.tabs[scan_name]["tab"]["status_label"]
+                scan_widget.start_animation()
+                QtCore.QMetaObject.invokeMethod(
+                    status_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Status: Scanning {scan_name}...")
                 )
+                self.add_log_entry(f"Started scanning {scan_name} for URL: {url}")
+                try:
+                    scan_method(url)
+                    QtCore.QMetaObject.invokeMethod(
+                        status_label, "setText", QtCore.Qt.QueuedConnection,
+                        QtCore.Q_ARG(str, f"Status: Completed {scan_name}")
+                    )
+                    self.add_log_entry(f"Completed scanning {scan_name} for URL: {url}")
+                except Exception as e:
+                    QtCore.QMetaObject.invokeMethod(
+                        status_label, "setText", QtCore.Qt.QueuedConnection,
+                        QtCore.Q_ARG(str, f"Error: {e}")
+                    )
+                    self.add_log_entry(f"Error during {scan_name} for URL {url}: {e}")
+                finally:
+                    scan_widget.stop_animation(completed=True)
+
+            # Phase 4: Directory scanning (independent)
+            dir_widget = self.tabs["📂 Directory Scanning"]["tab"]["scan_widget"]
+            dir_label = self.tabs["📂 Directory Scanning"]["tab"]["status_label"]
+            dir_widget.start_animation()
+            QtCore.QMetaObject.invokeMethod(
+                dir_label, "setText", QtCore.Qt.QueuedConnection,
+                QtCore.Q_ARG(str, "Status: Scanning Directories...")
+            )
+            self.add_log_entry(f"Started scanning 📂 Directory Scanning for URL: {url}")
+            try:
+                self.directory_scanner.scan_dir(url)
+                QtCore.QMetaObject.invokeMethod(
+                    dir_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, "Status: Completed Directory Scanning")
+                )
+                self.add_log_entry(f"Completed scanning 📂 Directory Scanning for URL: {url}")
+            except Exception as e:
+                QtCore.QMetaObject.invokeMethod(
+                    dir_label, "setText", QtCore.Qt.QueuedConnection,
+                    QtCore.Q_ARG(str, f"Error: {e}")
+                )
+                self.add_log_entry(f"Error during Directory Scanning for URL {url}: {e}")
+            finally:
+                dir_widget.stop_animation(completed=True)
+
+            self.add_log_entry("Scan All completed.")
+
+        threading.Thread(target=run_all_scans, daemon=True).start()
 
     def show_error_message(self, message):
         """Display error messages in a dialog."""

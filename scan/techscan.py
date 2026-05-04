@@ -1,6 +1,7 @@
 from core.color import Color
 from core.random_ag import rangent
-import requests, builtwith, subprocess
+from scan.bhttprobe import better_httprobe
+import requests, builtwith
 from requests.exceptions import Timeout, RequestException
 
 def more_info(target, user_agent=None, proxy=None):
@@ -15,10 +16,7 @@ def more_info(target, user_agent=None, proxy=None):
         with open(output_file_path, 'w', encoding='utf-8') as output_file:
             for url in read_subdo:
                 url_mentah = url.strip()
-                url = subprocess.check_output((f"echo {url.strip()} | httprobe -prefer-https"), shell=True, text=True).strip()
-                # print(url)
-                if not url:
-                    url = f"http://{url_mentah}" # sometimes httprobe doesnt return anything
+                url = better_httprobe(url_mentah)
                 technologies_str = ""
 
                 try:

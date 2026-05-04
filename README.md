@@ -1,8 +1,8 @@
-## s1c0n
-![Python](https://img.shields.io/badge/Python-3.9.2-blue)
+## s1c0n - simplefy your recon progress
+![Linux](https://img.shields.io/badge/Linux-blue)
+![Arch Linux](https://img.shields.io/badge/Arch%20Linux-blue)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
-![Terkey](https://github-readme-stats.vercel.app/api/pin?username=x0rr-dan&repo=s1c0n&title_color=fff&icon_color=fff&text_color=ffffff&bg_color=000000)
 
 ```
     	             ┏━┓╺┓ ┏━╸┏━┓┏┓╻
@@ -44,7 +44,7 @@ simple recon tool to help you searching vulnerability on web server. maybe xD
 4. Auto scan dir on web server
 5. wordpress plugin enumeration
 6. Auto detect cms (wordpress, joomla. drupal, moodle)
-7. Auto detect technology (like the server are use, framework, javascript framework, etc. thanks to builtwith librarry :) )
+7. Auto detect technology (like the server are use, framework, javascript framework, etc. thanks to builtwith librarry)
 
 ## Tested on:
 - Othros linux
@@ -62,7 +62,6 @@ sublist3r
 subfinder
 assetfinder
 dirsearch
-httprobe
 ```
 
 ## one line installer
@@ -102,10 +101,10 @@ python3 sicon.py -u <target>
 - [x] save output scan
 - [x] cms scanner
 # CLI
-- [ ] wordpress user enumeration
+- [x] wordpress user enumeration
 - [ ] report scan in html or json output
 - [x] option to use proxy
 - [x] user agent customization (random & user can choose)
 - [x] custom scan option
 # need improvemenr
-- [ ] detection wordpress (its suck)
+- [x] detection wordpress (its suck)

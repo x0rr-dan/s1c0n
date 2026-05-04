@@ -79,13 +79,6 @@ def installtool(package, distro):
             subprocess.run(["go", "install", "-v", "github.com/tomnomnom/assetfinder@latest"], shell=True)
             subprocess.run(["chmod", "+x", f"{home_user}/go/bin/{package}"])
             subprocess.run(["mv", f"{home_user}/go/bin/{package}", "/usr/bin/"])
-        elif package == "httprobe":
-            if not check_package_debian("golang"):
-                print("[!] Golang not found, installing golang first ..")
-                subprocess.run(["apt", "install", "-y", "golang"])
-            subprocess.run(["go", "install", "github.com/tomnomnom/httprobe@latest"], shell=True)
-            subprocess.run(["chmod", "+x", f"{home_user}/go/bin/{package}"])
-            subprocess.run(["mv", f"{home_user}/go/bin/{package}", "/usr/bin/"])
         else:
             subprocess.run(["apt", "install", "-y", package])
     elif distro in ["kali", "parrot"]:
@@ -97,8 +90,6 @@ def installtool(package, distro):
             subprocess.run(["yay", "-S", "--noconfirm", "sublist3r-git"])
         elif package == "assetfinder":
             subprocess.run(["yay", "-S", "--noconfirm", "assetfinder-git"])
-        elif package == "httprobe":
-            subprocess.run(["yay", "-S", "--noconfirm", "httprobe-bin"])
         else:
             subprocess.run(["pacman", "-S", "--noconfirm", package])
 
@@ -137,7 +128,6 @@ def main():
             "subfinder": "kali_parrot_arch",
             "assetfinder": "kali_parrot_arch",
             "dirsearch": "all",
-            "httprobe": "kali_parrot_arch",
         }
         distro = detect_distro()
 

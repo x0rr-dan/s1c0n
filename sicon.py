@@ -10,6 +10,7 @@ from scan.cmsscan import cms_detection
 from scan.scandir import scan_dir
 from scan.techscan import more_info
 from scan.wp.wp_enum import wp_enum
+from scan.wp.wp_user_enum import wp_user_enum
 
 def main():
     parser = argparse.ArgumentParser(description=break_and_help(), usage="""\nsicon -u site.com -o waf subdo     only do waf scanning and subdomain scanning\nsicon -u site.com -o scan_dir      only do waf scanning and subdomain scanning\nsicon -u site.com -o port subdo    only do port scanning and subdomain scanning\nsicon -u site.com                  scan with all options\n\nexample usage:\nsicon -u site.com --proxy='socks5://127.0.0.1:1080' --user-agent='Mozilla/5.0 (iPad; CPU OS 8_4_1 like Mac OS X)'      scan with all option and using proxy and custom user-agent""")
@@ -24,7 +25,7 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch','httprobe']
+    list_tool = ['nmap','wafw00f','sublist3r','subfinder','assetfinder','dirsearch']
     for tool in list_tool:
         check(tool)
     logo()
@@ -52,6 +53,7 @@ def main():
         more_info(url_target, ag, proxy)
         cms_detection(url_target, ag, proxy)
         wp_enum(url_target, ag, proxy)
+        wp_user_enum(url_target, ag, proxy)
         scan_dir(url_target, ag, proxy)
     else:
         print(f"{Color.bold}{Color.green}\n\t[*] Starting recon on : {url_target}{Color.reset}")
@@ -64,6 +66,7 @@ def main():
             more_info(url_target, ag, proxy)
             cms_detection(url_target, ag, proxy)
             wp_enum(url_target, ag, proxy)
+            wp_user_enum(url_target, ag, proxy)
         if "scan_dir" in options:
             scan_dir(url_target ,ag, proxy)
     

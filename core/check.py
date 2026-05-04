@@ -20,24 +20,12 @@ def check(tool):
         dis = distro()
         if dis in ['arch','blackarch']:
             if path.exists("/usr/bin/yay"):
-                if tool == 'httprobe':
-                    aur = f"{tool}-bin" if tool == 'httprobe' else tool
-                    process = subprocess.run(['yay', '-S', '--noconfirm', f'{aur}'], capture_output=True, text=True)
-                    if process.returncode != 0:
-                        print(f"{Color.red}[-] Failed to install {Color.bold}{aur}{Color.reset}")
-                        print(f"{Color.red}[-] Error output: {Color.bold}{process.stderr}{Color.reset}")
-                        sys.exit(1)
-                    else:
-                        pass
-                else:
-                     aur = tool
-                     process = subprocess.run(['yay', '-S', '--noconfirm', f'{aur}'], capture_output=True, text=True)
-                     if process.returncode != 0:
-                        print(f"{Color.red}[-] Failed to install {Color.bold}{aur}{Color.reset}")
-                        print(f"{Color.red}[-] Error output: {Color.bold}{process.stderr}{Color.reset}")
-                        sys.exit(1)
-                     else:
-                        pass
+                aur = tool
+                process = subprocess.run(['yay', '-S', '--noconfirm', f'{aur}'], capture_output=True, text=True)
+                if process.returncode != 0:
+                    print(f"{Color.red}[-] Failed to install {Color.bold}{aur}{Color.reset}")
+                    print(f"{Color.red}[-] Error output: {Color.bold}{process.stderr}{Color.reset}")
+                    sys.exit(1)
             else:
                  print(f"{Color.re}{Color.bold}[!] yay is not installed, Please install yay and run this script again ...")
             
